@@ -13,7 +13,6 @@ import dashboard from './routes/dashboard';
 import club from './routes/club';
 import manager from './routes/manager';
 
-
 mongoose.connect('mongodb://localhost:27017/project', { config: { autoIndex: false } });
 
 const app = express();
