@@ -35,4 +35,20 @@ router.post('/addSale', (req, res, next) => {
   });
 })
 
+router.post('/addPointsToCustomerById', (req, res, next) => {
+   console.log("7777777777777777777");
+  const customerId = req.body.customerId;
+  const clubId = req.body.clubId;
+  const numOfPoints = req.body.numOfPoints;
+ 
+   ManagerRepository.addPointsToCustomerById(customerId, clubId,numOfPoints )
+  .then(pointsUpdated => {
+    console.log("blue");
+    res.status(200).json(true);
+  })
+  .catch(err => {
+    console.log('User was not updated', err);
+    res.status(500).json(false);
+  });
+})
 export default router;
