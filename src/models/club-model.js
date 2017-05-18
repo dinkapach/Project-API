@@ -29,7 +29,6 @@ ClubModelValidator.runClubModelValidations(ClubSchema);
  export { ClubSchema, ClubsApiSchema };
  export default mongoose.model('Club', ClubSchema);
 
-
 // export {
 //     ClubSchema,
 //     ClubsApiModel,
