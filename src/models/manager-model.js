@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Crypto from '../services/crypto.service';
 import { ClubSchema } from './club-model';
-import Club from './club-model';
+import  ClubModel from './club-model';
 import ManagerValidator from './validations/manager-schema-validations';
 
 const Schema = mongoose.Schema;

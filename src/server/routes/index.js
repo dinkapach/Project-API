@@ -18,24 +18,29 @@ router.post('/', (req, res, next) => {
 
   CustomerRepository.findCustomerByEmail(email)
   .then(customer => {
+    if(customer){
       Crypto.isMatch(password, customer.password)
       .then(match => {
           if(match) {
               console.log("customer logged in");
-              res.status(200).json({ isAuth : true, customer: customer });
+              res.status(200).json(customer);
           } 
           else { 
-            res.status(200).json({ isAuth: false })
+            res.status(200).json(null);
             console.log("wrong password"); 
           }
       })
       .catch(err => { 
         console.log(err); 
       })
+    }
+    else {
+      res.status(200).json(customer);
+    }
   })
   .catch(err => {
-    console.log("customer wasnt found");
-    res.status(200).json({ isAuth : false });
+    console.log(err);
+    res.status(500).end();
  });
 });
 
