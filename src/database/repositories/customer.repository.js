@@ -11,8 +11,16 @@ export default {
         // });
     },
 
-    updateCustomer(customer, cb) { //??? what is cb. and whar exec does
-        return CustomerModel.findOneAndUpdate({id : customer.Id}, customer).exec();
+    updateCustomer(customerId, customerUpdate) {
+        return new Promise((resolve, reject) => {
+            CustomerModel.findOneAndUpdate({ id : customerId }, customerUpdate, { upsert: true, new: true }, (err, obj) => {
+            if (err){
+                console.log(err);
+                reject(err);
+            }
+            resolve(obj);
+            });
+        });
     },
 
     removeCustomer(customer){

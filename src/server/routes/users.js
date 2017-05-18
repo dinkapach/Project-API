@@ -26,18 +26,19 @@ router.get('/:id', (req, res, next) => {
 });
 
 router.post('/update', (req, res, next) => {
-  const user = req.body.user;
+  const customerUpdate = req.body.customerUpdate;
+  const customerId = req.body.customerId;
+  console.log(customerId, customerUpdate);
 
-  CustomerRepository.updateCustomer(user)
-  .then(userUpdated => {
-    res.status(200).json(true);
+  CustomerRepository.updateCustomer(customerId, customerUpdate)
+  .then(customerUpdated => {
+    console.log("return from updateCustomer:\n" + customerUpdated);
+    res.status(200).json(customerUpdated);
   })
   .catch(err => {
-    console.log('User was not updated', err);
+    console.log('Customer was not updated', err);
     res.status(500).json(false);
   });
-
-
 })
 
 export default router;
