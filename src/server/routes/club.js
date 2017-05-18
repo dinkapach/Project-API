@@ -1,7 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import Customer from '../.././models/user-model';
-import Club from '../.././models/club-model';
 import UserClub from '../.././models/user-club-model';
 import CustomerRepository from '../.././database/repositories/customer.repository';
 import ClubRepository from '../.././database/repositories/club.repository';

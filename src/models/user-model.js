@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Crypto from '../services/crypto.service';
 import { ClubSchema } from './club-model';
-import Club from './club-model';
+import ClubModel from './club-model';
 import { CreditSchema } from './credit-model';
 import { ReceiptSchema } from './receipt-model';
 import CustomerSchemaValidator from './validations/user-schema-validations';

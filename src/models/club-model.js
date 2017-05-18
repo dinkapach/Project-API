@@ -17,6 +17,20 @@ const ClubSchema = new Schema({
     branches: [mongoose.Schema.Types.ObjectId]
 });
 
+const ClubsApiSchema = new Schema({
+    clubId : mongoose.Schema.Types.ObjectId,
+    endpoint: String,  // url
+});
+
+//const ClubModel = mongoose.model('Club', ClubSchema);
+//const ClubsApiModel = mongoose.model('ClubsApi', ClubsApiSchema);
+
 ClubModelValidator.runClubModelValidations(ClubSchema); 
-export { ClubSchema };
-export default mongoose.model('Club', ClubSchema);
+ export { ClubSchema, ClubsApiSchema };
+ export default mongoose.model('Club', ClubSchema);
+
+// export {
+//     ClubSchema,
+//     ClubsApiModel,
+//     ClubModel
+// }
