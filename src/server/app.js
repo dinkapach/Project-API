@@ -13,8 +13,8 @@ import dashboard from './routes/dashboard';
 import club from './routes/club';
 import manager from './routes/manager';
 
-const uri = mongodb://heroku_96z67r5p:d0htimb5l2h6kjguqgegaf4u4d@ds161121.mlab.com:61121/heroku_96z67r5p;
-//const uri = mongodb://localhost:27017/project;
+// const uri = "mongodb://localhost:27017/project";
+const uri = "mongodb://allin:a1b2c3d4@ds059306.mlab.com:59306/all-in";
 mongoose.connect(uri, { config: { autoIndex: false } });
 
 const app = express();
