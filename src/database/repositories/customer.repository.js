@@ -11,19 +11,15 @@ export default {
         // });
     },
 
-    updateCustomer(customerId, customerUpdate) {
-        return new Promise((resolve, reject) => {
-            CustomerModel.findOneAndUpdate({ id : customerId }, customerUpdate, { upsert: true, new: true }, (err, obj) => {
-            if (err){
-                console.log(err);
-                reject(err);
-            }
-            resolve(obj);
-            });
-        });
+    updateCustomer(customer, cb) { //??? what is cb. and whar exec does
+        return CustomerModel.findOneAndUpdate({id : customer.Id}, customer).exec();
     },
     
-    updateCustomerCreditCard(customer, cb) { //??? what is cb. and whar exec does
+    addCustomerCredit(customer, cb) { 
+        return CustomerModel.findOneAndUpdate({id : customer.Id}, customer).exec();
+    },
+
+    editCustomerCredit(customer, cb) { 
         return CustomerModel.findOneAndUpdate({id : customer.Id}, customer).exec();
     },
 
