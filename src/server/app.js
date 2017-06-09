@@ -13,8 +13,9 @@ import dashboard from './routes/dashboard';
 import club from './routes/club';
 import manager from './routes/manager';
 
-
-mongoose.connect('mongodb://localhost:27017/project', { config: { autoIndex: false } });
+// const uri = "mongodb://localhost:27017/project";
+const uri = "mongodb://allin:a1b2c3d4@ds059306.mlab.com:59306/all-in";
+mongoose.connect(uri, { config: { autoIndex: false } });
 
 const app = express();
 
