@@ -22,6 +22,10 @@ export default {
             });
         });
     },
+    
+    updateCustomerCreditCard(customer, cb) { //??? what is cb. and whar exec does
+        return CustomerModel.findOneAndUpdate({id : customer.Id}, customer).exec();
+    },
 
     removeCustomer(customer){
         customer.remove();
