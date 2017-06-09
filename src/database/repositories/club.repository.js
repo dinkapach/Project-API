@@ -1,4 +1,5 @@
 import ClubModel from '../../models/club-model';
+import CreditModel from '../../models/credit-model';
 
 export default {
 
@@ -26,6 +27,14 @@ export default {
             ClubModel.find({}, (err, clubs) => {
                 if(err) reject(err);
                 else resolve(clubs);
+            });
+        });
+    },
+     getAllCredits() {
+        return new Promise((resolve, reject) => {
+            CreditModel.find({}, (err, credits) => {
+                if(err) reject(err);
+                else resolve(credits);
             });
         });
     },

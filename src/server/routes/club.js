@@ -37,5 +37,23 @@ router.get('/user/:id', (req, res, next) => {
 });
 
 
+router.get('/credits', (req, res, next) => {
+    ClubRepository.getAllCredits()
+    .then( clubs => {
+        if(clubs) {
+            res.status(200).json(clubs);
+        }
+        else {
+            console.log( "club.js: no credits ");
+            res.status(200).json(clubs);
+        }
+    })
+    .catch(err => { 
+        console.log(err);
+        res.status(500).json(clubs);
+    });
+});
+
+
 
 export default router;

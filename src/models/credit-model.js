@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const CreditSchema = new Schema({
     id: Number,
+    clubId: Number,
     dateOfPurchase: Date,
     dateOfExpired: Date,
     items: [String],

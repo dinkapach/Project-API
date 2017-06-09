@@ -44,19 +44,20 @@ router.post('/update', (req, res, next) => {
 
 router.post('/addCredit', (req, res, next) => {
   const userId = req.body.userId;
+  const credit = req.body.credit;
   // const clubId = req.body.clubId;
   // const totalPrice = req.body.totalPrice;
   // const numOfItems = req.body.numOfItems;
-  var credit = new Credit();
-  credit.id = 3;
-  credit.dateOfPurchase = "1/1/16";
-  credit.dateOfExpired = "1/2/16";
-  credit.items = [];
-  credit.totalCredit = 12;
+  // var credit = new Credit();
+  // credit.id = 3;
+  // credit.dateOfPurchase = "1/1/16";
+  // credit.dateOfExpired = "1/2/16";
+  // credit.items = [];
+  // credit.totalCredit = 12;
 
   console.log(credit);
   // res.status(200).json(true);
-  CustomerRepository.addCustomerCredit(userId)
+  CustomerRepository.addCustomerCredit(userId, credit)
   .then(userUpdated => {
     res.status(200).json(true);
   })
