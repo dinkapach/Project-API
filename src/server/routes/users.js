@@ -1,5 +1,6 @@
 import express from 'express';
 import Customer from '../.././models/user-model';
+import Credit from '../.././models/credit-model';
 import CustomerRepository from '../.././database/repositories/customer.repository';
 
 const router = express.Router();
@@ -29,35 +30,40 @@ router.post('/update', (req, res, next) => {
   const customerUpdate = req.body.customerUpdate;
   const customerId = req.body.customerId;
   console.log(customerId, customerUpdate);
-
-  CustomerRepository.updateCustomer(customerId, customerUpdate)
-  .then(customerUpdated => {
-    console.log("return from updateCustomer:\n" + customerUpdated);
-    res.status(200).json(customerUpdated);
-  })
-  .catch(err => {
-    console.log('Customer was not updated', err);
-    res.status(500).json(false);
-  });
+  res.status(200).json(true);
+  // CustomerRepository.updateCustomer(customerId, customerUpdate)
+  // .then(customerUpdated => {
+  //   console.log("return from updateCustomer:\n" + customerUpdated);
+  //   res.status(200).json(customerUpdated);
+  // })
+  // .catch(err => {
+  //   console.log('Customer was not updated', err);
+  //   res.status(500).json(false);
+  // });
 });
 
 router.post('/addCredit', (req, res, next) => {
   const userId = req.body.userId;
-  const clubId = req.body.clubId;
-  const totalPrice = req.body.totalPrice;
-  const numOfItems = req.body.numOfItems;
-  console.log(userId + "==================");
+  // const clubId = req.body.clubId;
+  // const totalPrice = req.body.totalPrice;
+  // const numOfItems = req.body.numOfItems;
+  var credit = new Credit();
+  credit.id = 3;
+  credit.dateOfPurchase = "1/1/16";
+  credit.dateOfExpired = "1/2/16";
+  credit.items = [];
+  credit.totalCredit = 12;
 
-  res.status(200).json(true);
-
-  // CustomerRepository.addCustomerCredit(user)
-  // .then(userUpdated => {
-  //   res.status(200).json(true);
-  // })
-  // .catch(err => {
-  //   console.log('User was not updated', err);
-  //   res.status(500).json(false);
-  // });
+  console.log(credit);
+  // res.status(200).json(true);
+  CustomerRepository.addCustomerCredit(userId)
+  .then(userUpdated => {
+    res.status(200).json(true);
+  })
+  .catch(err => {
+    console.log('credit was not updated', err);
+    res.status(500).json(false);
+  });
 });
 
 export default router;

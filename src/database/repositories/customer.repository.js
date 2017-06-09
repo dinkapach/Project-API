@@ -23,8 +23,29 @@ updateCustomer(customerId, customerUpdate) {
         });
     },
     
-    addCustomerCredit(customer, cb) { 
-        return CustomerModel.findOneAndUpdate({id : customer.Id}, customer).exec();
+    addCustomerCredit(customerId, credit) {
+        return new Promise((resolve, reject) => {
+            console.log("in addCustomerCredit");
+            this.findCustomerById(customerId)
+            .then(customer =>{
+                if(customer){
+                    console.log(customer + "true");
+                    customer.credits.push(credit);
+                    customer.save(function(err){
+                        if(err){
+                            console.log(err + "error");
+                        }
+                        else{
+                            console.log("success");
+                        }
+                    });
+                }
+                else{
+                    console.log(customer + "false");
+                }
+            })
+            .catch(err => console.log("error" + err));
+        });
     },
 
     editCustomerCredit(customer, cb) { 
