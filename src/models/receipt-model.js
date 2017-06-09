@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const ReceiptSchema = new Schema({
     id: Number,
+    clubID: Number, 
     dateOfPurchase: Date,
     items: [String],
     totalCredit: Number

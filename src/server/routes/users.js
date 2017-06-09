@@ -37,6 +37,18 @@ router.post('/update', (req, res, next) => {
     res.status(500).json(false);
   });
 
+  router.post('/updateCredit', (req, res, next) => {
+  const user = req.body.user;
+
+  CustomerRepository.updateCustomerCreditCard(user)
+  .then(userUpdated => {
+    res.status(200).json(true);
+  })
+  .catch(err => {
+    console.log('User was not updated', err);
+    res.status(500).json(false);
+  });
+
 
 })
 

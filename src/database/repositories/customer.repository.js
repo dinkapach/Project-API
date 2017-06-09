@@ -14,6 +14,10 @@ export default {
     updateCustomer(customer, cb) { //??? what is cb. and whar exec does
         return CustomerModel.findOneAndUpdate({id : customer.Id}, customer).exec();
     },
+    
+    updateCustomerCreditCard(customer, cb) { //??? what is cb. and whar exec does
+        return CustomerModel.findOneAndUpdate({id : customer.Id}, customer).exec();
+    },
 
     removeCustomer(customer){
         customer.remove();
