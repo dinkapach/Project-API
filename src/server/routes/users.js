@@ -41,17 +41,23 @@ router.post('/update', (req, res, next) => {
   });
 });
 
-  router.post('/updateCredit', (req, res, next) => {
-  const user = req.body.user;
+router.post('/addCredit', (req, res, next) => {
+  const userId = req.body.userId;
+  const clubId = req.body.clubId;
+  const totalPrice = req.body.totalPrice;
+  const numOfItems = req.body.numOfItems;
+  console.log(userId + "==================");
 
-  CustomerRepository.updateCustomerCreditCard(user)
-  .then(userUpdated => {
-    res.status(200).json(true);
-  })
-  .catch(err => {
-    console.log('User was not updated', err);
-    res.status(500).json(false);
-  });
+  res.status(200).json(true);
+
+  // CustomerRepository.addCustomerCredit(user)
+  // .then(userUpdated => {
+  //   res.status(200).json(true);
+  // })
+  // .catch(err => {
+  //   console.log('User was not updated', err);
+  //   res.status(500).json(false);
+  // });
 });
 
 export default router;
