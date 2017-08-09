@@ -34,17 +34,20 @@ updateCustomer(customerId, customerUpdate) {
                     customer.save(function(err){
                         if(err){
                             console.log(err + "error");
+                            reject(err);
                         }
                         else{
                             console.log("success");
+                            resolve(customer);
                         }
                     });
                 }
                 else{
                     console.log(customer + "false");
+                    reject(customer);
                 }
             })
-            .catch(err => console.log("error" + err));
+            .catch(err => reject(err));
         });
     },
 
