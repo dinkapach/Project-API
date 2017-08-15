@@ -11,6 +11,7 @@ export default {
         // });
     },
 
+
 updateCustomer(customerId, customerUpdate) {
         return new Promise((resolve, reject) => {
             CustomerModel.findOneAndUpdate({ id : customerId }, customerUpdate, { upsert: true, new: true }, (err, obj) => {
@@ -88,12 +89,20 @@ updateCustomer(customerId, customerUpdate) {
             });
         });
     },
-    removeClubById(customer, clubId){
-        var index;
-        var i =0;
-        index = customer.clubs.indexOf(clubId);
-        customer.Clubs.splice(index, 1);
-        customer.save();
+    removeClubByClubId(customer, clubId){
+        return new Promise((resolve, reject) => {
+            customer.clubs = customer.clubs.filter(club =>{
+                return club.id != clubId;
+            })
+            CustomerModel.findOneAndUpdate({ id : customer.id }, customer, { upsert: true, new: true }, (err, obj) => {
+                if (err){
+                    console.log(err);
+                    reject(err);
+                }
+                resolve(obj);
+                });
+            });
+            
     },
     changePrivateInfo(custId, index, newItem)
     {
@@ -127,17 +136,31 @@ updateCustomer(customerId, customerUpdate) {
      },
      removeCreditOrReceipt(customerId, creditId, prop)
      {
-         this.findCustomerById(customerId)
-         .then(customer => {
-             if(customer)
-             {
-                let index = this.getIndexOfCreditOrReceipt(customer, creditId, prop)
-                customer[prop].splice(index, 1);
-                customer.save();
-             }
-             else { console.log("Customer wasnt found"); }
-         })
-         .catch(err => { console.log(err); });
+        return new Promise((resolve, reject) => {
+            this.findCustomerById(customerId)
+            .then(customer =>{
+                if(customer){
+                    console.log(customer + "true");
+                    let index = this.getIndexOfCreditOrReceipt(customer, creditId, prop)
+					customer[prop].splice(index, 1);
+					customer.save(function(err){
+                        if(err){
+                            console.log(err + "error");
+                            reject(err);
+                        }
+                        else{
+                            console.log("success");
+                            resolve(customer);
+                        }
+                    });
+                }
+                else{
+                    console.log(customer + "false");
+                    reject(customer);
+                }
+            })
+            .catch(err => reject(err));
+        });
      },
      findCreditOrReceipt(customer, creditId, prop)
      {

@@ -14,7 +14,8 @@ const ClubSchema = new Schema({
     openingHours: [Date, Date],
     usersClub: [UserClubSchema],
     sales: [SaleSchema],
-    branches: [mongoose.Schema.Types.ObjectId]
+    branches: [mongoose.Schema.Types.ObjectId],
+    isManual: Boolean
 });
 
 const ClubsApiSchema = new Schema({

@@ -4,6 +4,7 @@ import Customer from '../.././models/user-model';
 import UserClub from '../.././models/user-club-model';
 import CustomerRepository from '../.././database/repositories/customer.repository';
 import ClubRepository from '../.././database/repositories/club.repository';
+import UserClubRepository from '../.././database/repositories/userClub.repository';
 import ClubModel from '../.././models/club-model';
 
 const router = express.Router();
@@ -25,6 +26,57 @@ router.get('/', (req, res, next) => {
     });
 });
 
+
+router.post('/addToCustomer', (req, res, next) => {
+    const club = req.body.club;
+    const customer = req.body.user;
+    const userClub = new UserClub();
+
+    userClub.clubId = club._id;
+    userClub.customerId = customer._id;
+    userClub.points = 0;
+
+    CustomerRepository.updateCustomer(customer.id, customer)
+    .then(customerUpdated => {
+      console.log("return from updateCustomer:\n" + customerUpdated);
+      UserClubRepository.addUserClub(userClub);
+      club.usersClub.push(userClub);
+      ClubRepository.updateClub(club.id, club);
+      
+      res.status(200).json(true);
+    })
+    .catch(err => {
+      console.log('Customer was not updated', err);
+      res.status(500).json(false);
+    });
+  });
+
+
+  router.post('/deleteCustomer', (req, res, next) => {
+    const club = req.body.club;
+    const customer = req.body.user;
+
+    console.log("in club- deleteCustomer ");
+    console.log(club);
+
+    CustomerRepository.removeClubByClubId(customer, club.id)
+    .then(customerUpdated => {
+        ClubRepository.removeCustomerByCustomerId(club, customer._id)
+        .then(clubUpdated => {
+            res.status(200).json(true);
+        })
+        .catch(err => {
+            console.log('Club was not updated', err);
+            res.status(500).json(false);
+        })
+    })
+    .catch(err => {
+      console.log('Customer was not updated', err);
+      res.status(500).json(false);
+    });
+  });
+
+
 router.get('/user/:id', (req, res, next) => {
     const id = req.params.id;
 
@@ -37,10 +89,12 @@ router.get('/user/:id', (req, res, next) => {
 });
 
 
+
 router.get('/credits', (req, res, next) => {
     ClubRepository.getAllCredits()
     .then( clubs => {
         if(clubs) {
+            console.log("From server: clubs/credit...");
             res.status(200).json(clubs);
         }
         else {
@@ -53,6 +107,24 @@ router.get('/credits', (req, res, next) => {
         res.status(500).json(clubs);
     });
 });
+
+router.post('/addManualClub', (req, res, next) => {
+    const userId = req.body.userId;
+    const club = req.body.club;
+
+    console.log("From server..addClub ");
+  
+    // ClubRepository.addClubToUser(userId, club)
+    // .then(userUpdated => {
+    //   console.log('credit was deleted');
+    //   res.status(200).json({isAuth: true, user: userUpdated});
+    // })
+    // .catch(err => {
+    //   console.log('credit was not deleted', err);
+    //   res.status(500).json(false);
+    // });
+
+  });
 
 
 

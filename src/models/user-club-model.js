@@ -1,11 +1,13 @@
 import mongoose from 'mongoose';
 import { CustomerSchema } from './user-model';
 import Customer from './user-model';
+import Club from './club-model';
 
 const Schema = mongoose.Schema;
 
 const UserClubSchema = new Schema({
-    id: Number,
+    //id: Number,
+    clubId: {type : mongoose.Schema.Types.ObjectId, ref : 'Club'},
     customerId: {type : mongoose.Schema.Types.ObjectId, ref : 'Customer'}, 
     points: Number
 });

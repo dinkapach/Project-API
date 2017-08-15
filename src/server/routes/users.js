@@ -30,16 +30,16 @@ router.post('/update', (req, res, next) => {
   const customerUpdate = req.body.customerUpdate;
   const customerId = req.body.customerId;
   console.log(customerId, customerUpdate);
-  res.status(200).json(true);
-  // CustomerRepository.updateCustomer(customerId, customerUpdate)
-  // .then(customerUpdated => {
-  //   console.log("return from updateCustomer:\n" + customerUpdated);
-  //   res.status(200).json(customerUpdated);
-  // })
-  // .catch(err => {
-  //   console.log('Customer was not updated', err);
-  //   res.status(500).json(false);
-  // });
+  // res.status(200).json(true);
+  CustomerRepository.updateCustomer(customerId, customerUpdate)
+  .then(customerUpdated => {
+    console.log("return from updateCustomer:\n" + customerUpdated);
+    res.status(200).json(customerUpdated);
+  })
+  .catch(err => {
+    console.log('Customer was not updated', err);
+    res.status(500).json(false);
+  });
 });
 
 router.post('/addCredit', (req, res, next) => {
@@ -47,13 +47,12 @@ router.post('/addCredit', (req, res, next) => {
   const creditObj = req.body.credit;
   var credit = new Credit();
   credit.id = creditObj.id;
+  credit.clubId = creditObj.clubId;
   credit.dateOfPurchase = creditObj.dateOfPurchase;
   credit.dateOfExpired = creditObj.dateOfExpired;
   credit.items = creditObj.items;
   credit.totalCredit = creditObj.totalCredit;
 
-  console.log(credit);
-  // res.status(200).json(true);
   CustomerRepository.addCustomerCredit(userId, credit)
   .then(userUpdated => {
     console.log('credit was added');
@@ -64,5 +63,24 @@ router.post('/addCredit', (req, res, next) => {
     res.status(500).json(false);
   });
 });
+
+
+router.post('/deleteCredit', (req, res, next) => {
+  const userId = req.body.userId;
+  const creditObj = req.body.credit;
+
+  console.log("from server-deleteCredit - user id is: ", userId );
+  
+  CustomerRepository.removeCreditOrReceipt(userId, creditObj.id, "credits" )
+  .then(userUpdated => {
+    console.log('credit was deleted');
+    res.status(200).json({isAuth: true, user: userUpdated});
+  })
+  .catch(err => {
+    console.log('credit was not deleted', err);
+    res.status(500).json(false);
+  });
+});
+
 
 export default router;

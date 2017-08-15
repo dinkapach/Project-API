@@ -14,6 +14,17 @@ export default {
             });
         });
     },
+    updateClub(clubId, clubUpdate) {
+        return new Promise((resolve, reject) => {
+            ClubModel.findOneAndUpdate({ id : clubId }, clubUpdate, { upsert: true, new: true }, (err, obj) => {
+            if (err){
+                console.log(err);
+                reject(err);
+            }
+            resolve(obj);
+            });
+        });
+    },
     findClubByObjectId(id) {
         return new Promise((resolve, reject) => {
             ClubModel.findOne({_id: id}, (err, club) => {
@@ -38,17 +49,26 @@ export default {
             });
         });
     },
-    removeCustomerById(club, customerId){
+    removeCustomerByCustomerId(club, customerId){
+        return new Promise((resolve, reject) => {
         let index = 0;
         let i = 0;
         club.usersClub.forEach((userClub) => {
-            if(userClub.customerId == customerId)
-                index = i;
+                if(customerId == userClub.customerId){
+                    index = i;
+                }
             i++;
         });
-
         club.usersClub.splice(index, 1);
-        club.save();
+
+        ClubModel.findOneAndUpdate({ id : club.id }, club, { upsert: true, new: true }, (err, obj) => {
+            if (err){
+                console.log(err);
+                reject(err);
+            }
+            resolve(obj);
+            });
+        });
     },
     addSale(club, sale)
     {
