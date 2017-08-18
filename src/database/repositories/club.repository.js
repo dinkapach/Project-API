@@ -4,7 +4,7 @@ import CreditModel from '../../models/credit-model';
 export default {
 
     addClub(club) {
-        club.save();
+        return ClubModel.create(club);
     },
     findClubById(id) {
         return new Promise((resolve, reject) => {
@@ -18,7 +18,7 @@ export default {
         return new Promise((resolve, reject) => {
             ClubModel.findOneAndUpdate({ id : clubId }, clubUpdate, { upsert: true, new: true }, (err, obj) => {
             if (err){
-                console.log(err);
+                console.log(" in Update Club");
                 reject(err);
             }
             resolve(obj);
