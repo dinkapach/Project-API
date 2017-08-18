@@ -16,7 +16,7 @@ updateCustomer(customerId, customerUpdate) {
         return new Promise((resolve, reject) => {
             CustomerModel.findOneAndUpdate({ id : customerId }, customerUpdate, { upsert: true, new: true }, (err, obj) => {
             if (err){
-                console.log(err);
+                console.log("Error in update customer");
                 reject(err);
             }
             resolve(obj);
