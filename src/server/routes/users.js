@@ -42,6 +42,44 @@ router.post('/updateCustomerInfo', (req, res, next) => {
   });
 });
 
+// router.post('/singup', (req, res, next) => {
+//   const customerUpdate = req.body.customerUpdate;
+//   const customerId = req.body.customerId;
+//   console.log(customerId, customerUpdate);
+//   // res.status(200).json(true);
+//   CustomerRepository.updateCustomer(customerId, customerUpdate)
+//   .then(customerUpdated => {
+//     console.log("return from updateCustomer:\n" + customerUpdated);
+//     res.status(200).json(customerUpdated);
+//   })
+//   .catch(err => {
+//     console.log('Customer was not updated', err);
+//     res.status(500).json(false);
+//   });
+// });
+
+router.post('/signup', (req, res, next) => {
+  console.log("newCustomer");
+  const newCustomer = req.body.customer;
+  console.log(newCustomer);
+  CustomerRepository.addCustomer(newCustomer)
+  .then(customer =>{
+    console.log(customer);
+    if(customer){
+      console.log("return customer\n"+customer);
+      res.status(200).json(customer);
+    }
+    else{
+      console.log("return fail customer\n"+customer);
+      res.status(400).json(customer);
+    }
+  })
+  .catch(err => {
+    console.log("error create customer" + err);
+    res.status(500).json(err);
+  });
+});
+
 router.post('/editCredit', (req, res, next) => {
   const creditUpdate = req.body.creditUpdate;
   const customerId = req.body.customerId;

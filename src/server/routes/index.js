@@ -43,41 +43,4 @@ router.post('/', (req, res, next) => {
     res.status(500).end();
  });
 });
-
-
-router.post('/singup', (req, res, next) => {
-  const id = req.body.id;
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  const password = req.body.password;
-  const address = req.body.address;
-  const email = req.body.email;
-  const phone = req.body.phone;
-  const birthday = req.body.birthday;
-  //TODO#username
-
-  const customer = new Customer({
-      id: id,
-      username: firstName,
-      firstName: firstName,
-      lastName: lastName,
-      password: password,
-      address: address,
-      email: email,
-      age: dateTimeFunctions.calculateAge(birthday),
-      phoneNumber: phone,
-      img : "",
-      birthday: birthday,
-      clubs: [],
-      credits: [],
-      receipts: []
-  });
-
-  console.log(customer);
-  CustomerRepository.addCustomer(customer);
-
-  res.status(200).json({isAuth: true});
-
-})
-
 export default router;
