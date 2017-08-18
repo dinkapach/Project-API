@@ -26,7 +26,7 @@ router.get('/:id', (req, res, next) => {
 
 });
 
-router.post('/update', (req, res, next) => {
+router.post('/updateCustomerInfo', (req, res, next) => {
   const customerUpdate = req.body.customerUpdate;
   const customerId = req.body.customerId;
   console.log(customerId, customerUpdate);
@@ -38,6 +38,22 @@ router.post('/update', (req, res, next) => {
   })
   .catch(err => {
     console.log('Customer was not updated', err);
+    res.status(500).json(false);
+  });
+});
+
+router.post('/editCredit', (req, res, next) => {
+  const creditUpdate = req.body.creditUpdate;
+  const customerId = req.body.customerId;
+  console.log(customerId, creditUpdate);
+  // res.status(200).json(true);
+  CustomerRepository.editCustomerCredit(customerId, creditUpdate)
+  .then(creditUpdated => {
+    console.log("return from updateCustomer:\n" + creditUpdated);
+    res.status(200).json(creditUpdated);
+  })
+  .catch(err => {
+    console.log('Credit was not updated', err);
     res.status(500).json(false);
   });
 });

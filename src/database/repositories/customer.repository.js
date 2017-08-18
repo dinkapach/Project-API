@@ -10,9 +10,7 @@ export default {
         //         return console.error(err);
         // });
     },
-
-
-updateCustomer(customerId, customerUpdate) {
+    updateCustomer(customerId, customerUpdate) {
         return new Promise((resolve, reject) => {
             CustomerModel.findOneAndUpdate({ id : customerId }, customerUpdate, { upsert: true, new: true }, (err, obj) => {
             if (err){
@@ -23,7 +21,6 @@ updateCustomer(customerId, customerUpdate) {
             });
         });
     },
-    
     addCustomerCredit(customerId, credit) {
         return new Promise((resolve, reject) => {
             console.log("in addCustomerCredit");
@@ -52,8 +49,22 @@ updateCustomer(customerId, customerUpdate) {
         });
     },
 
-    editCustomerCredit(customer, cb) { 
-        return CustomerModel.findOneAndUpdate({id : customer.Id}, customer).exec();
+    editCustomerCredit(customerId, creditUpdate) {
+        // return new Promise((resolve, reject) => {
+        //     CustomerModel.findOneAndUpdate({ id : customerId }, creditUpdate, { upsert: true, new: true }, (err, obj) => {
+        //     if (err){
+        //         console.log(err);
+        //         reject(err);
+        //     }
+        //     resolve(obj);
+        //     });
+        // });
+        return new Promise((resolve, reject) => {
+            CustomerModel.update({id: customerId, 'credits._id': creditUpdate._id},
+            {$set: { "credits.$": creditUpdate }})
+            .then(credit => resolve(credit))
+            .catch(err => reject(err));
+        });
     },
 
     removeCustomer(customer){
