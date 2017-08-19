@@ -4,6 +4,7 @@ import { ClubSchema } from './club-model';
 import ClubModel from './club-model';
 import { CreditSchema } from './credit-model';
 import { ReceiptSchema } from './receipt-model';
+import { ClubManuallySchema } from './club-manually-model';
 import CustomerSchemaValidator from './validations/user-schema-validations';
 
 const Schema = mongoose.Schema;
@@ -22,7 +23,9 @@ const CustomerSchema = new Schema({
     birthday: String,
     clubs: [{type : mongoose.Schema.Types.ObjectId, ref : 'Club'}],
     credits: [CreditSchema],
-    receipts: [ReceiptSchema]}
+    receipts: [ReceiptSchema],
+    manuallyClubs: [ClubManuallySchema]
+},    
     );
 
 CustomerSchema.pre('save', function(next) {

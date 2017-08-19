@@ -27,8 +27,6 @@ router.get('/', (req, res, next) => {
 });
 
 
-
-
   router.post('/deleteCustomer', (req, res, next) => {
     const club = req.body.club;
     const customer = req.body.user;
