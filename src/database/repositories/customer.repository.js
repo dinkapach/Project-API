@@ -93,12 +93,17 @@ export default {
         });
     },
     findCustomerByEmail(email) {
+        // return new Promise((resolve, reject) => {
+        //     CustomerModel.findOne({email: email}, (err, customer) => {
+        //         if(err) reject(err);
+        //         else resolve(customer);
+            // });
         return new Promise((resolve, reject) => {
-            CustomerModel.findOne({email: email}, (err, customer) => {
-                if(err) reject(err);
-                else resolve(customer);
+            CustomerModel.findOne({email : email}).populate('clubs')
+            .then(customer => resolve(customer))
+            .catch(err => reject(err));
             });
-        });
+        
     },
     removeClubByClubId(customer, clubId){
         return new Promise((resolve, reject) => {
