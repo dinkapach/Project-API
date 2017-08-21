@@ -184,19 +184,4 @@ router.post('/saveReceipt', (req, res, next) => {
 });
 
 
-router.post('/deleteReceipt', (req, res, next) => {
-  const userId = req.body.userId;
-
-  CustomerRepository.removeReceipt(userId)
-  .then(userUpdated => {
-    console.log('Receipt was deleted');
-    res.status(200).json({isAuth: true, user: userUpdated});
-  })
-  .catch(err => {
-    console.log('Receipt was not deleted', err);
-    res.status(500).json(false);
-  });
-});
-
-
 export default router;
