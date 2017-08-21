@@ -1,6 +1,7 @@
 import express from 'express';
 import Customer from '../.././models/user-model';
 import Credit from '../.././models/credit-model';
+import Receipt from '../.././models/receipt-model';
 import CustomerRepository from '../.././database/repositories/customer.repository';
 
 const router = express.Router();
@@ -51,7 +52,7 @@ router.post('/changePassword', (req, res, next) => {
 router.post('/updateCustomerInfo', (req, res, next) => {
   const customerUpdate = req.body.customerUpdate;
   const customerId = req.body.customerId;
-  console.log(customerId, customerUpdate);
+  console.log("from updateCustomerInfo: ", customerId, customerUpdate);
   // res.status(200).json(true);
   CustomerRepository.updateCustomer(customerId, customerUpdate)
   .then(customerUpdated => {
@@ -90,7 +91,6 @@ router.post('/editCredit', (req, res, next) => {
   const creditUpdate = req.body.creditUpdate;
   const customerId = req.body.customerId;
   console.log(customerId, creditUpdate);
-  // res.status(200).json(true);
   CustomerRepository.editCustomerCredit(customerId, creditUpdate)
   .then(creditUpdated => {
     console.log("return from updateCustomer:\n" + creditUpdated);
@@ -139,6 +139,52 @@ router.post('/deleteCredit', (req, res, next) => {
     console.log('credit was not deleted', err);
     res.status(500).json(false);
   });
+});
+
+router.post('/saveReceipt', (req, res, next) => {
+  console.log(" in the begin of saveReceipt");
+  const customer = req.body.user;
+  const pictureString = req.body.picture;
+  const club = req.body.club;
+  const isManual = req.body.isManual;
+
+  let receipt = new Receipt();
+  receipt.isManual = isManual;
+  if(!isManual){
+    receipt.clubId = club._id;
+  }
+  else{
+    receipt.clubManuallyID = club._id;
+  }
+  receipt.img = pictureString;
+
+  console.log("receipt is:", receipt);
+
+  CustomerRepository.addReceipt(receipt)
+  .then(receiptRes => {
+    if(receiptRes){
+      console.log("after create receipt:", receiptRes);
+      customer.receipts.push(receiptRes);
+      CustomerRepository.updateCustomer(customer.id, customer)
+      .then(updateUser => {
+        console.log("after update user:", updateUser);
+          res.status(200).json({isUpdate : true, receipt: receiptRes})
+      })
+      .catch(err => {
+        console.log(" user didnt update - err: \n ", err);
+        res.status(500).json({isUpdate : false});
+      })
+    }
+    else {
+      console.log("faild to create Receipt");
+      res.status(400).json({isUpdate : false});
+    }
+  })
+  .catch(err => {
+    console.log("error in create Receipt. err: \n", err);
+    res.status(500).json({isUpdate : false});
+  })
+
 });
 
 export default router;

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import CustomerModel from '../../models/user-model';
 import Crypto from '../../services/crypto.service';
+import ReceiptModel from '../../models/receipt-model'
 
 export default {
 
@@ -59,6 +60,9 @@ export default {
               reject(err);
            });
         });
+    },
+    addReceipt(receipt){
+        return ReceiptModel.create(receipt);
     },
     addCustomerCredit(customerId, credit) {
         return new Promise((resolve, reject) => {
