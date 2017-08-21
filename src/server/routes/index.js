@@ -7,6 +7,11 @@ import dateTimeFunctions from '../.././helpers/datetime.functions';
 
 const router = express.Router();
 
+router.get('/testDin', (req, res, next) => {
+  console.log("hello world");
+  res.status(200).json("customerUpdated");
+});
+
 /* GET home page. */
 router.get('/', (req, res, next) => {
   res.status(200).json({response : "OK!"});
