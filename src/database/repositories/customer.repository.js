@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import CustomerModel from '../../models/user-model';
+import ReceiptModel from '../../models/receipt-model'
 
 export default {
 
@@ -9,6 +10,24 @@ export default {
         //     if(err)
         //         return console.error(err);
         // });
+    },
+    removeReceipt(){
+        return new Promise((resolve, reject) => {
+            this.findCustomerById(15)
+            .then(customer => {
+                customer.receipts = [];
+                this.updateCustomer(customer.id, customer)
+                .then(updateCustomer => {
+                    resolve(updateCustomer);
+                })
+                .catch(err => {
+                    reject(err);
+                })
+            })
+            .catch(err => {
+                reject(err);
+            })
+        });
     },
     updateCustomer(customerId, customerUpdate) {
         return new Promise((resolve, reject) => {
@@ -20,6 +39,9 @@ export default {
             resolve(obj);
             });
         });
+    },
+    addReceipt(receipt){
+        return ReceiptModel.create(receipt);
     },
     addCustomerCredit(customerId, credit) {
         return new Promise((resolve, reject) => {
