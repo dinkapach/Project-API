@@ -41,7 +41,7 @@ router.post('/addPointsToCustomerById', (req, res, next) => {
   const clubId = req.body.clubId;
   const numOfPoints = req.body.numOfPoints;
  
-   ManagerRepository.addPointsToCustomerById(customerId, clubId,numOfPoints )
+   ManagerRepository.addPointsToCustomerById(customerId, clubId, numOfPoints )
   .then(pointsUpdated => {
     console.log("blue");
     res.status(200).json(true);
