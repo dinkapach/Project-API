@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import CustomerModel from '../../models/user-model';
+import Crypto from '../../services/crypto.service';
 import ReceiptModel from '../../models/receipt-model'
 
 export default {
@@ -20,6 +21,44 @@ export default {
             }
             resolve(obj);
             });
+        });
+    },
+    changePassword(customerId, currentPassword, newPassword) {
+        return new Promise((resolve, reject) => {
+            this.findCustomerById(customerId)
+            .then(customer => {
+              console.log(customer);
+              if(customer){
+                Crypto.isMatch(currentPassword, customer.password)
+                .then(match => {
+                  console.log("passwords match: "+match);
+                    if(match) {
+                        customer.password = newPassword;
+                        customer.save(function(err){
+                            if(err){
+                                console.log(err + "error saving pass");
+                                reject(err);
+                            }
+                            else{
+                                console.log("success saving pass");
+                                resolve(customer);
+                            }
+                        });
+                    } 
+                    else { 
+                      console.log("wrong password"); 
+                      reject(match);
+                    }
+                })}
+              else {
+                  console.log(customer);
+                reject(customer);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+              reject(err);
+           });
         });
     },
     addReceipt(receipt){
@@ -75,15 +114,16 @@ export default {
         customer.remove();
     },
 
-    findCustomerById(id) {
+    findCustomerById(customerId) {
         // return new Promise((resolve, reject) => {
         //     CustomerModel.findOne({Id: id}, (err, customer) => {
         //         if (err) reject(err);
         //         else resolve(customer);
         //     });
         // });
+        // console.log("id number: "+customerId);
         return new Promise((resolve, reject) => {
-            CustomerModel.findOne({id : id}).populate('clubs')
+            CustomerModel.findOne({id : customerId}).populate('clubs')
             .then(customer => resolve(customer))
             .catch(err => reject(err));
         });

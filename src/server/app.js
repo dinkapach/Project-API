@@ -42,7 +42,6 @@ app.use('/api/dashboard', dashboard);
 app.use('/api/club', club);
 app.use('/api/manager', manager);
 
-
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   var err = new Error('Not Found');

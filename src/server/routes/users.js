@@ -8,24 +8,46 @@ import cloudinary from 'cloudinary';
 const router = express.Router();
 
 /* GET users listing. */
-router.get('/:id', (req, res, next) => {
+// router.get('/:id', (req, res, next) => {
   
-  const id = req.params.id;
-  CustomerRepository.findCustomerById(id)
+//   const id = req.params.id;
+//   CustomerRepository.findCustomerById(id)
+//   .then(customer => {
+//     if(customer) {
+//       res.status(200).json(customer);
+//     }
+//     else { 
+//       console.log("user not found");
+//       res.status(200).json({customer: customer});
+//     }
+//   })
+//   .catch(err => { 
+//     console.log(err); 
+//     res.status(500).end();
+//   });
+// });
+
+router.post('/changePassword', (req, res, next) => {
+  const currentPassword = req.body.currentPassword;
+  const newPassword = req.body.newPassword;
+  const customerId = req.body.customerId;
+  console.log("currentPassword: " + currentPassword + "newPassword: " + newPassword + "customerId" + customerId);
+
+  CustomerRepository.changePassword(customerId, currentPassword, newPassword)
   .then(customer => {
     if(customer) {
+      console.log("success" + customer);
       res.status(200).json(customer);
     }
     else { 
-      console.log("user not found");
-      res.status(200).json({customer: customer});
+      console.log("user not found" + customer);
+      res.status(400).json(false);
     }
   })
   .catch(err => { 
-    console.log(err); 
-    res.status(500).end();
+    console.log("password not match" + err); 
+    res.status(400).json(false).end();
   });
-
 });
 
 router.post('/updateCustomerInfo', (req, res, next) => {
@@ -43,22 +65,6 @@ router.post('/updateCustomerInfo', (req, res, next) => {
     res.status(500).json(false);
   });
 });
-
-// router.post('/singup', (req, res, next) => {
-//   const customerUpdate = req.body.customerUpdate;
-//   const customerId = req.body.customerId;
-//   console.log(customerId, customerUpdate);
-//   // res.status(200).json(true);
-//   CustomerRepository.updateCustomer(customerId, customerUpdate)
-//   .then(customerUpdated => {
-//     console.log("return from updateCustomer:\n" + customerUpdated);
-//     res.status(200).json(customerUpdated);
-//   })
-//   .catch(err => {
-//     console.log('Customer was not updated', err);
-//     res.status(500).json(false);
-//   });
-// });
 
 router.post('/signup', (req, res, next) => {
   console.log("newCustomer");
@@ -118,7 +124,6 @@ router.post('/addCredit', (req, res, next) => {
     res.status(500).json(false);
   });
 });
-
 
 router.post('/deleteCredit', (req, res, next) => {
   const userId = req.body.userId;

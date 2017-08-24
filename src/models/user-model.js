@@ -30,8 +30,10 @@ const CustomerSchema = new Schema({
 
 CustomerSchema.pre('save', function(next) {
     var user = this;
-
-    if (!user.isModified('password'))
+    console.log("on pre save customer schema");
+    let passwordModified = user.isModified('password');
+    console.log("pass modified: "+passwordModified);
+    if (!passwordModified)
         return next();
 
     Crypto.encrypt(user.password).then((value) => {
