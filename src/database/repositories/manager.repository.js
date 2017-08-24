@@ -18,12 +18,15 @@ export default {
         });
     },
     findManagerByEmail(email) {
+      
         return new Promise((resolve, reject) => {
             ManagerModel.findOne({ email: email }, (err, manager) => {
                 if (err) reject(err);
                 else resolve(manager);
+                    
             });
         });
+    
     },
     addClub(manager, clubId) {
         manager.clubs.push(clubId);

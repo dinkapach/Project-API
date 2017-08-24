@@ -54,7 +54,7 @@ router.get('/', (req, res, next) => {
 
 router.get('/user/:id', (req, res, next) => {
     const id = req.params.id;
-
+    
     CustomerRepository.findCustomerById(id)
     .then(customer => {
         ClubModel.find({_id: { $in: customer.clubs }}).then(clubs => {
@@ -63,6 +63,38 @@ router.get('/user/:id', (req, res, next) => {
     });
 });
 
+router.get('/:id', (req, res, next) => {
+
+    ClubRepository.findClubById(id)
+    .then(club => { 
+        if (club){   
+             console.log('from server: club/id ' + club.name);
+             res.status(200).json(club);
+        }
+        else{
+              console.log('from server: club/id - NoClubs' );
+              res.status(200).json(club);
+        }
+   
+    })
+        .catch(err => { 
+        console.log(err);
+        res.status(500).json(club);
+    });
+});
+
+router.get('/objectid/:clubId', (req, res, next) => {
+    const objectId = req.params.clubId;
+    
+    ClubRepository.findClubByObjectId(objectId)
+    .then(club => {
+        res.status(200).json(club);
+    })
+    .catch( err => {
+         console.log(err);
+        res.status(500).json(club);
+    });
+});
 
 
 router.get('/credits', (req, res, next) => {

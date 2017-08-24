@@ -147,7 +147,7 @@ export default {
             .then(customer => resolve(customer))
             .catch(err => reject(err));
             });
-        
+       
     },
     removeClubByClubId(customer, clubId){
         return new Promise((resolve, reject) => {
