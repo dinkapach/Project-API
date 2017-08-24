@@ -68,7 +68,6 @@ export default {
         return clubModel.findClubById(clubId)
             .then(club => {
                 if (club) {
-
                     club.usersClub.forEach(function (userClub) {
                         customerModel.findCustomerById(customerId)
                             .then(customer => {
@@ -80,7 +79,7 @@ export default {
                                     }
                                 }
                                 else {
-                                    Console.log("customer not found");
+                                    console.log("customer not found");
                                 }
                             })
                             .catch(err => {
