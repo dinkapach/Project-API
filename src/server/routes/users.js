@@ -3,6 +3,7 @@ import Customer from '../.././models/user-model';
 import Credit from '../.././models/credit-model';
 import Receipt from '../.././models/receipt-model';
 import CustomerRepository from '../.././database/repositories/customer.repository';
+import cloudinary from 'cloudinary';
 
 const router = express.Router();
 
@@ -142,50 +143,76 @@ router.post('/deleteCredit', (req, res, next) => {
   });
 });
 
+
 router.post('/saveReceipt', (req, res, next) => {
-  console.log(" in the begin of saveReceipt");
-  const customer = req.body.user;
-  const pictureString = req.body.picture;
-  const club = req.body.club;
-  const isManual = req.body.isManual;
-
-  let receipt = new Receipt();
-  receipt.isManual = isManual;
-  if(!isManual){
-    receipt.clubId = club._id;
-  }
-  else{
-    receipt.clubManuallyID = club._id;
-  }
-  receipt.img = pictureString;
-
-  console.log("receipt is:", receipt);
-
-  CustomerRepository.addReceipt(receipt)
-  .then(receiptRes => {
-    if(receiptRes){
-      console.log("after create receipt:", receiptRes);
-      customer.receipts.push(receiptRes);
-      CustomerRepository.updateCustomer(customer.id, customer)
-      .then(updateUser => {
-        console.log("after update user:", updateUser);
-          res.status(200).json({isUpdate : true, receipt: receiptRes})
-      })
-      .catch(err => {
-        console.log(" user didnt update - err: \n ", err);
-        res.status(500).json({isUpdate : false});
-      })
-    }
-    else {
-      console.log("faild to create Receipt");
-      res.status(400).json({isUpdate : false});
-    }
+  
+    const picture = req.body.picture;
+    
+    cloudinary.v2.uploader.upload(picture, (err, result) => {
+      if(err){
+        console.log(err);
+        res.status(500).json({isUpdated : false});
+      }
+      else{
+        console.log(result);
+        res.status(200).json({isUpdated : true, result: result})
+      }
+    // function(error, result) {
+    //   console.log(result);
+    //   res.status(200).json({isUpdated : true, result: result})
+    // });
+    
   })
-  .catch(err => {
-    console.log("error in create Receipt. err: \n", err);
-    res.status(500).json({isUpdate : false});
-  })
-
 });
+
+// router.post('/saveReceipt', (req, res, next) => {
+
+//   console.log(" in the begin of saveReceipt");
+//   const customer = req.body.user;
+//   const pictureArr = req.body.picture;
+//   const club = req.body.club;
+//   const isManual = req.body.isManual;
+
+//   let receipt = new Receipt();
+//   receipt.isManual = isManual;
+//   if(!isManual){
+//     receipt.clubId = club._id;
+//   }
+//   else{
+//     receipt.clubManuallyID = club._id;
+//   }
+//   receipt.img = pictureArr;
+
+//   console.log("receipt is:", receipt);
+//   console.log(" after print receipt");
+
+  
+//   CustomerRepository.addReceipt(receipt)
+//   .then(receiptRes => {
+//     if(receiptRes){
+//       console.log("after create receipt:", receiptRes);
+//       customer.receipts.push(receiptRes);
+//       CustomerRepository.updateCustomer(customer.id, customer)
+//       .then(updateUser => {
+//         console.log("after update user:", updateUser);
+//           res.status(200).json({isUpdated : true, receipt: receiptRes})
+//       })
+//       .catch(err => {
+//         console.log(" user didnt update - err: \n ", err);
+//         res.status(500).json({isUpdated : false});
+//       })
+//     }
+//     else {
+//       console.log("faild to create Receipt");
+//       res.status(400).json({isUpdated : false});
+//     }
+//   })
+//   .catch(err => {
+//     console.log("error in create Receipt. err: \n", err);
+//     res.status(500).json({isUpdated : false});
+//   })
+
+// });
+
 
 export default router;

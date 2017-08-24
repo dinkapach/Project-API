@@ -63,6 +63,19 @@ router.get('/user/:id', (req, res, next) => {
     });
 });
 
+router.get('/:id', (req, res, next) => {
+    const id = req.params.id;
+
+    ClubRepository.findClubById(id)
+    .then(club => {
+        res.status(200).json({ clubId : club._id });
+    })
+    .catch(err => {
+        console.log("error in club.js-/:id-", err);
+        res.status(500).json({clubId : false });
+    })
+});
+
 
 
 router.get('/credits', (req, res, next) => {
