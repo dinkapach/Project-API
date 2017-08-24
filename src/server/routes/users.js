@@ -7,24 +7,25 @@ import CustomerRepository from '../.././database/repositories/customer.repositor
 const router = express.Router();
 
 /* GET users listing. */
-// router.get('/:id', (req, res, next) => {
-  
-//   const id = req.params.id;
-//   CustomerRepository.findCustomerById(id)
-//   .then(customer => {
-//     if(customer) {
-//       res.status(200).json(customer);
-//     }
-//     else { 
-//       console.log("user not found");
-//       res.status(200).json({customer: customer});
-//     }
-//   })
-//   .catch(err => { 
-//     console.log(err); 
-//     res.status(500).end();
-//   });
-// });
+router.get('/', (req, res, next) => {
+  const id = req.query.id;
+  console.log(id);
+  // res.status(404).json(false);
+  CustomerRepository.findCustomerById(id)
+  .then(customer => {
+    if(customer) {
+      res.status(200).json(customer);
+    }
+    else { 
+      console.log("user not found");
+      res.status(404).json({customer: customer});
+    }
+  })
+  .catch(err => { 
+    console.log(err); 
+    res.status(500).end();
+  });
+});
 
 router.post('/changePassword', (req, res, next) => {
   const currentPassword = req.body.currentPassword;
