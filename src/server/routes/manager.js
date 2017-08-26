@@ -2,7 +2,8 @@ import express from 'express';
 import Manager from '../.././models/manager-model';
 import ManagerRepository from '../.././database/repositories/manager.repository';
 import Sale from '../.././models/sale-model';
-
+import CustomerRepository from '../.././database/repositories/customer.repository';
+import ClubRepository from '../.././database/repositories/club.repository';
 
 const router = express.Router();
 
@@ -36,7 +37,6 @@ router.post('/addSale', (req, res, next) => {
 })
 
 router.post('/addPointsToCustomerById', (req, res, next) => {
-   console.log("7777777777777777777");
   const customerId = req.body.customerId;
   const clubId = req.body.clubId;
   const numOfPoints = req.body.numOfPoints;
@@ -48,12 +48,12 @@ router.post('/addPointsToCustomerById', (req, res, next) => {
   })
   .catch(err => {
     console.log('User was not updated', err);
-    res.status(500).json(false);
+    res.status(500).json(false)
   });
 })
 
 router.post('/subscribePointsToCustomerById', (req, res, next) => {
-   console.log("manager js func post subscribe");
+  console.log("manager js func post subscribe");
   const customerId = req.body.customerId;
   const clubId = req.body.clubId;
   const numOfPoints = req.body.numOfPoints;
@@ -65,8 +65,36 @@ router.post('/subscribePointsToCustomerById', (req, res, next) => {
   })
   .catch(err => {
     console.log('User was not updated', err);
+    
     res.status(500).json(false);
   });
 })
+
+router.post('/deleteCustomer', (req, res, next) => {
+    const clubId = req.body.clubId;
+    const customerId = req.body.customerId;
+
+    console.log("333");
+    console.log(clubId);
+    console.log("444");
+    console.log(customerId);
+
+
+    ManagerRepository.removeClubFromUaerClubsByClubId(customerId, clubId)
+    .then(customerUpdated => {
+        ClubRepository.removeCustomerByCustomerId(club, customerId)
+        .then(clubUpdated => {
+            res.status(200).json(true);
+        })
+        .catch(err => {
+            console.log('Club was not deleted', err);
+            res.status(500).json(false);
+        })
+    })
+    .catch(err => {
+      console.log('Customer was not deleted', err);
+      res.status(500).json(false);
+    });
+  });
 
 export default router;

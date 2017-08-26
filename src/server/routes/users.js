@@ -9,9 +9,8 @@ const router = express.Router();
 
 /* GET users listing. */
 router.get('/', (req, res, next) => {
-  const id = req.query.id;
-  console.log(id);
-  // res.status(404).json(false);
+  const id = req.body.customerId;
+  console.log('users js : + ' + id);
   CustomerRepository.findCustomerById(id)
   .then(customer => {
     if(customer) {
@@ -27,6 +26,10 @@ router.get('/', (req, res, next) => {
     res.status(500).end();
   });
 });
+
+
+
+
 
 router.post('/changePassword', (req, res, next) => {
   const currentPassword = req.body.currentPassword;

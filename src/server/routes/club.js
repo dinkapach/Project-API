@@ -27,29 +27,7 @@ router.get('/', (req, res, next) => {
 });
 
 
-  router.post('/deleteCustomer', (req, res, next) => {
-    const club = req.body.club;
-    const customer = req.body.user;
-
-    console.log("in club- deleteCustomer ");
-    console.log(club);
-
-    CustomerRepository.removeClubByClubId(customer, club.id)
-    .then(customerUpdated => {
-        ClubRepository.removeCustomerByCustomerId(club, customer._id)
-        .then(clubUpdated => {
-            res.status(200).json(true);
-        })
-        .catch(err => {
-            console.log('Club was not updated', err);
-            res.status(500).json(false);
-        })
-    })
-    .catch(err => {
-      console.log('Customer was not updated', err);
-      res.status(500).json(false);
-    });
-  });
+  
 
 
 router.get('/user/:id', (req, res, next) => {
@@ -192,6 +170,22 @@ router.post('/addToCustomer', (req, res, next) => {
     });
   });
 
+  router.post('/deleteSale', (req, res, next) => {
+  const saleId = req.body.saleId;
+  const club = req.body.club;
+
+  console.log("from server-deleteSale - user id is: ", saleId );
+  
+  ClubRepository.removeSale(club, saleId)
+  .then(clubUpdated => {
+    console.log('sale was deleted');
+    res.status(200).json({isAuth: true, club: clubUpdated});
+  })
+  .catch(err => {
+    console.log('sale was not deleted', err);
+    res.status(500).json(false);
+  });
+});
 
 
 export default router;
