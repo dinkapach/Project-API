@@ -8,7 +8,8 @@ const ClubManuallySchema = new Schema({
     address: String,
     phoneNumber: String,
     img : String,
-    points: Number
+    points: Number,
+    isManual: Boolean
 },    
     );
 

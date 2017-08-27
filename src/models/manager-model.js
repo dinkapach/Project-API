@@ -13,7 +13,7 @@ const ManagerSchema = new Schema({
     lastName: String,
     password: String,
     email: String,
-    clubId: {type : mongoose.Schema.Types.ObjectId, ref : 'Club'},
+    clubId: Number,
     permissions: String
 });
 

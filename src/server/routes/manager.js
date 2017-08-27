@@ -51,22 +51,4 @@ router.post('/addPointsToCustomerById', (req, res, next) => {
     res.status(500).json(false);
   });
 })
-
-router.post('/subscribePointsToCustomerById', (req, res, next) => {
-   console.log("manager js func post subscribe");
-  const customerId = req.body.customerId;
-  const clubId = req.body.clubId;
-  const numOfPoints = req.body.numOfPoints;
- 
-   ManagerRepository.subscribePointsToCustomerById(customerId, clubId,numOfPoints )
-  .then(pointsUpdated => {
-    console.log("after manager repository");
-    res.status(200).json(true);
-  })
-  .catch(err => {
-    console.log('User was not updated', err);
-    res.status(500).json(false);
-  });
-})
-
 export default router;
