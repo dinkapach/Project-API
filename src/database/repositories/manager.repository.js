@@ -25,6 +25,21 @@ export default {
             });
         });
     },
+    removeClubFromUaerClubsByClubId(customer, clubId){
+        return new Promise((resolve, reject) => {
+            customer.clubs = customer.clubs.filter(club =>{
+                return club.id != clubId;
+            })
+            CustomerModel.findOneAndUpdate({ id : customer.id }, customer, { upsert: true, new: true }, (err, obj) => {
+                if (err){
+                    console.log(err);
+                    reject(err);
+                }
+                resolve(obj);
+                });
+            });
+            
+    },
     addClub(manager, clubId) {
         manager.clubs.push(clubId);
         manager.save();

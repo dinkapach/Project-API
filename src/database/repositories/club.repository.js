@@ -90,6 +90,7 @@ export default {
             }
             i++;
         });
+
         club.sales.splice(index, 1);
         club.save();
     },
