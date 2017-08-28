@@ -18,12 +18,15 @@ export default {
         });
     },
     findManagerByEmail(email) {
+      
         return new Promise((resolve, reject) => {
             ManagerModel.findOne({ email: email }, (err, manager) => {
                 if (err) reject(err);
                 else resolve(manager);
+                    
             });
         });
+    
     },
     removeClubFromUaerClubsByClubId(customer, clubId){
         return new Promise((resolve, reject) => {
@@ -79,7 +82,7 @@ export default {
             })
     },
     addPointsToCustomerById(customerId, clubId, numOfPoints) {
-        console.log(" KAKA");
+        
         return clubModel.findClubById(clubId)
             .then(club => {
                 if (club) {
@@ -91,7 +94,9 @@ export default {
                                         userClub.points = parseInt(userClub.points) + parseInt(numOfPoints);
                                         console.log("points: ", userClub.points);
                                         club.save();
+                                        userClub.save();
                                     }
+                                  
                                 }
                                 else {
                                     console.log("customer not found");
@@ -112,20 +117,42 @@ export default {
                 console.log(err);
             })
     },
-    subscribePointsToCustomerById(customerId, club, numOfPoints) {
-
-        clubModel.findClubById(clubId)
+    subscribePointsToCustomerById(customerId, clubId, numOfPoints)  {
+        
+        return clubModel.findClubById(clubId)
             .then(club => {
-                club.UsersClub.findOne({ customerId: customerId }, (err, customer) => {
+                if (club) {
 
-                    if (err) {
-                        console.log("CustomerId not found");
-                    }
-                    else {
-                        customer.Points -= numOfPoints;
-                        console.log("addsubscribei points to costumer!");
-                    }
-                });
+                    club.usersClub.forEach(function (userClub) {
+                        customerModel.findCustomerById(customerId)
+                            .then(customer => {
+                                if (customer) {
+                                    if (customer._id.equals(userClub.customerId)) {
+                                        if (parseInt(userClub.points) < parseInt(numOfPoints)){
+                                            console.log("customer not have enough points");
+                                        }
+                                        else {
+                                            userClub.points = parseInt(userClub.points) - parseInt(numOfPoints);
+                                            console.log("points after suscribe: ", userClub.points);
+                                            club.save();
+                                            userClub.save();}
+                                    }
+                                  
+                                }
+                                else {
+                                    console.log("customer not found");
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            });
+
+
+                    })
+                }
+                else {
+                    console.log("no clubs");
+                }
             })
             .catch(err => {
                 console.log(err);
