@@ -25,6 +25,8 @@ cloudinary.config({
 });
 
 const app = express();
+const schedule = require('node-schedule');
+
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -58,5 +60,6 @@ app.use((err, req, res, next) => {
   console.log(`There has been an unhandled exception error: ${err}`);
   res.status(err.status || 500).end();
 });
+
 
 export default app;
