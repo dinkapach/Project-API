@@ -9,9 +9,10 @@ const router = express.Router();
 
 /* GET users listing. */
 router.get('/', (req, res, next) => {
-  const id = req.body.customerId;
-  console.log('users js : + ' + id);
-  CustomerRepository.findCustomerById(id)
+  const customerId = req.query.customerId;
+  console.log('users js : + ' + customerId);
+  // console.log(req.query);
+  CustomerRepository.findCustomerById(customerId)
   .then(customer => {
     if(customer) {
       res.status(200).json(customer);

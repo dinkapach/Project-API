@@ -1,7 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import Customer from '../.././models/user-model';
-import Manager from '../.././models/manager-model';
 import CustomerRepository from '../.././database/repositories/customer.repository';
 import ManagerRepository from '../.././database/repositories/manager.repository';
 import Crypto from '../.././services/crypto.service';
@@ -35,9 +34,8 @@ router.post('/', (req, res, next) => {
               res.status(200).json(customer);
           } 
           else { 
-             console.log("wrong password"); 
             res.status(400).json("wrong password");
-          
+            console.log("wrong password"); 
           }
       })
       .catch(err => { 
@@ -54,6 +52,7 @@ router.post('/', (req, res, next) => {
     res.status(500).end();
  });
 });
+
 
 router.post('/manager', (req, res, next) => {
   const password = req.body.password;
