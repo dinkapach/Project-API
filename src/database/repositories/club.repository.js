@@ -83,6 +83,7 @@ export default {
     {
         let i = 0;
         let index = 0;
+        console.log ( 'noy halfon');
         club.sales.forEach(function(sale) {
             if(sale.id == saleId)
             {
@@ -92,7 +93,16 @@ export default {
         });
 
         club.sales.splice(index, 1);
-        club.save();
+        // club.save();
+       return new Promise((resolve, reject) => {
+          ClubModel.findOneAndUpdate({ id : club.id }, club, { upsert: true, new: true }, (err, obj) => {
+          if (err){
+            console.log(err);
+            reject(err);
+        }
+        resolve(obj);
+        });
+      });
     },
     addPointsToClub(club, customerId, points){
          club.usersClub.forEach(function(userClub) {

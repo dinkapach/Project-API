@@ -173,9 +173,7 @@ router.post('/addToCustomer', (req, res, next) => {
   router.post('/deleteSale', (req, res, next) => {
   const saleId = req.body.saleId;
   const club = req.body.club;
-
   console.log("from server-deleteSale - user id is: ", saleId );
-  
   ClubRepository.removeSale(club, saleId)
   .then(clubUpdated => {
     console.log('sale was deleted');
