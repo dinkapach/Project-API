@@ -1,64 +1,33 @@
 import mongoose from 'mongoose';
 import SuperManagerModel from '../../models/super-manager-model';
+import ManagerModel from '../../models/manager-model';
+import ClubModel from '../../models/club-model';
 import Crypto from '../../services/crypto.service';
+import ManagerRepository from '../.././database/repositories/manager.repository';
+
 
 export default {
 
     addSuperManager(customer) {
         return SuperManagerModel.create(customer);
     },
-    updateSuperManager(customerId, customerUpdate) {
-        return new Promise((resolve, reject) => {
-            SuperManagerModel.findOneAndUpdate({ id : customerId }, customerUpdate, { upsert: true, new: true }, (err, obj) => {
-            if (err){
-                console.log("Error in update customer");
-                reject(err);
-            }
-            resolve(obj);
-            });
-        });
+    createManager(newManager){
+        return ManagerModel.create(newManager);
     },
-    changePassword(customerId, currentPassword, newPassword) {
-        return new Promise((resolve, reject) => {
-            this.findSuperManagerById(customerId)
-            .then(customer => {
-              console.log(customer);
-              if(customer){
-                Crypto.isMatch(currentPassword, customer.password)
-                .then(match => {
-                  console.log("passwords match: "+match);
-                    if(match) {
-                        customer.password = newPassword;
-                        customer.save(function(err){
-                            if(err){
-                                console.log(err + "error saving pass");
-                                reject(err);
-                            }
-                            else{
-                                console.log("success saving pass");
-                                resolve(customer);
-                            }
-                        });
-                    } 
-                    else { 
-                      console.log("wrong password"); 
-                      reject(match);
-                    }
-                })}
-              else {
-                  console.log(customer);
-                reject(customer);
-              }
-            })
-            .catch(err => {
-              console.log(err);
-              reject(err);
-           });
-        });
+    createClub(newClub){
+        return ClubModel.create(newClub);
     },
-    removeCustomer(customer){
-        customer.remove();
-    },
+    // addClubToManager(clubObjectId, managerId) {
+    //     return new Promise((resolve, reject) => {
+    //         ManagerRepository.findManagerById(managerId)
+    //         .then(manager => {
+    //             manager.clubId = clubObjectId;
+    //             console.log("from add club to manager");
+    //             return ManagerRepository.updateManager(manager.id, manager);
+    //         })
+    //         .catch(err => { reject(err); })
+    //     })
+    // },
     findCustomerById(customerId) {
         return new Promise((resolve, reject) => {
             SuperManagerModel.findOne({id : customerId})
@@ -74,12 +43,11 @@ export default {
             });
         });
     },
-    findCustomerByEmail(email) {
+    findSuperManagerByEmail(email) {
         return new Promise((resolve, reject) => {
             SuperManagerModel.findOne({email : email})
             .then(customer => resolve(customer))
             .catch(err => reject(err));
-            });
-        
+        });
     }
 }

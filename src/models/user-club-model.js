@@ -6,8 +6,6 @@ import Club from './club-model';
 const Schema = mongoose.Schema;
 
 const UserClubSchema = new Schema({
-    //id: Number,
-    clubId: {type : mongoose.Schema.Types.ObjectId, ref : 'Club'},
     customerId: {type : mongoose.Schema.Types.ObjectId, ref : 'Customer'}, 
     points: Number
 });
