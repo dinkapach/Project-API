@@ -12,6 +12,7 @@ import users from './routes/users';
 import dashboard from './routes/dashboard';
 import club from './routes/club';
 import manager from './routes/manager';
+import superManager from './routes/superManager';
 import cloudinary from 'cloudinary';
 
 // const uri = "mongodb://localhost:27017/project";
@@ -43,6 +44,7 @@ app.use('/api/users', users);
 app.use('/api/dashboard', dashboard);
 app.use('/api/club', club);
 app.use('/api/manager', manager);
+app.use('/api/supermanager', superManager);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

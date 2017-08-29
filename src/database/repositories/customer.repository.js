@@ -115,13 +115,6 @@ export default {
     },
 
     findCustomerById(customerId) {
-        // return new Promise((resolve, reject) => {
-        //     CustomerModel.findOne({Id: id}, (err, customer) => {
-        //         if (err) reject(err);
-        //         else resolve(customer);
-        //     });
-        // });
-        // console.log("id number: "+customerId);
         return new Promise((resolve, reject) => {
             CustomerModel.findOne({id : customerId}).populate('clubs')
             .then(customer => resolve(customer))

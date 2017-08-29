@@ -27,9 +27,6 @@ router.get('/', (req, res, next) => {
 });
 
 
-  
-
-
 router.get('/user/:id', (req, res, next) => {
     const id = req.params.id;
     
@@ -109,9 +106,6 @@ router.post('/addManualClub', (req, res, next) => {
     club.branches = clubObj.branches;
     club.isManual = clubObj.isManual;
 
-    
-    
-
     console.log("From server..addManualClub ");
 
     ClubRepository.addClub(club)
@@ -121,10 +115,8 @@ router.post('/addManualClub', (req, res, next) => {
         .then(customerUpdated => {
             console.log("return from updateCustomer");
         const userClub = new UserClub();
-          userClub.clubId = clubRes._id;
           userClub.customerId = customer._id;
           userClub.points = 0;
-          UserClubRepository.addUserClub(userClub);
           clubRes.usersClub.push(userClub);
           ClubRepository.updateClub(clubRes.id, clubRes);
           
@@ -151,14 +143,12 @@ router.post('/addToCustomer', (req, res, next) => {
     const customer = req.body.user;
     const userClub = new UserClub();
 
-    userClub.clubId = club._id;
     userClub.customerId = customer._id;
     userClub.points = 0;
 
     CustomerRepository.updateCustomer(customer.id, customer)
     .then(customerUpdated => {
       console.log("return from updateCustomer:\n" + customerUpdated);
-      UserClubRepository.addUserClub(userClub);
       club.usersClub.push(userClub);
       ClubRepository.updateClub(club.id, club);
       

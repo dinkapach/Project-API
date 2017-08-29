@@ -6,6 +6,17 @@ export default {
     addClub(club) {
         return ClubModel.create(club);
     },
+    RemoveClub(clubObjectId) {
+        return new Promise((resolve, reject) => {
+            ClubModel.findOneAndRemove({ _id : clubObjectId }, (err, obj) => {
+            if (err){
+                console.log("Error in remove club");
+                reject(err);
+            }
+            resolve(obj);
+            });
+        });
+    },
     findClubById(id) {
         return new Promise((resolve, reject) => {
             ClubModel.findOne({id: id}, (err, club) => {
@@ -51,15 +62,9 @@ export default {
     },
     removeCustomerByCustomerId(club, customerId){
         return new Promise((resolve, reject) => {
-        let index = 0;
-        let i = 0;
-        club.usersClub.forEach((userClub) => {
-                if(customerId == userClub.customerId){
-                    index = i;
-                }
-            i++;
-        });
-        club.usersClub.splice(index, 1);
+        club.userClub = club.userClub.filter(userClub => {
+            return customerId != userClub.customerId;
+        })
 
         ClubModel.findOneAndUpdate({ id : club.id }, club, { upsert: true, new: true }, (err, obj) => {
             if (err){

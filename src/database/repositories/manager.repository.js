@@ -6,8 +6,16 @@ export default {
     addManager(manager) {
         manager.save();
     },
-    removeManager(manager) {
-        manager.remove();
+    removeManager(managerId) {
+        return new Promise((resolve, reject) => {
+            ManagerModel.findOneAndRemove({ id : managerId }, (err, obj) => {
+            if (err){
+                console.log("Error in remove manager");
+                reject(err);
+            }
+            resolve(obj);
+            });
+        });
     },
     findManagerById(id) {
         return new Promise((resolve, reject) => {
@@ -27,6 +35,25 @@ export default {
             });
         });
     
+    },
+    updateManager(managerId, managerUpdate) {
+        return new Promise((resolve, reject) => {
+            ManagerModel.findOneAndUpdate({ id : managerId }, managerUpdate, { upsert: true, new: true }, (err, obj) => {
+            if (err){
+                console.log("Error in update manager");
+                reject(err);
+            }
+            resolve(obj);
+            });
+        });
+    },
+    getAllManagers() {
+        return new Promise((resolve, reject) => {
+            ManagerModel.find({}, (err, clubs) => {
+                if(err) reject(err);
+                else resolve(clubs);
+            });
+        });
     },
     removeClubFromUaerClubsByClubId(customer, clubId){
         return new Promise((resolve, reject) => {
@@ -94,7 +121,6 @@ export default {
                                         userClub.points = parseInt(userClub.points) + parseInt(numOfPoints);
                                         console.log("points: ", userClub.points);
                                         club.save();
-                                        userClub.save();
                                     }
                                   
                                 }
@@ -135,7 +161,7 @@ export default {
                                             userClub.points = parseInt(userClub.points) - parseInt(numOfPoints);
                                             console.log("points after suscribe: ", userClub.points);
                                             club.save();
-                                            userClub.save();}
+                                        }
                                     }
                                   
                                 }
