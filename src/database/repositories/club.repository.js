@@ -83,7 +83,7 @@ export default {
     {
         let i = 0;
         let index = 0;
-        console.log ( 'noy halfon');
+
         club.sales.forEach(function(sale) {
             if(sale.id == saleId)
             {
@@ -94,6 +94,30 @@ export default {
 
         club.sales.splice(index, 1);
         // club.save();
+       return new Promise((resolve, reject) => {
+          ClubModel.findOneAndUpdate({ id : club.id }, club, { upsert: true, new: true }, (err, obj) => {
+          if (err){
+            console.log(err);
+            reject(err);
+        }
+        resolve(obj);
+        });
+      });
+    },
+    removeUser(club, customerId)
+    {
+        let i = 0;
+        let index = 0;
+        
+        club.usersClub.forEach(function(userClub) {
+            if(userClub.customerId == customerId)
+            {
+                index = i;
+            }
+            i++;
+        });
+
+        club.usersClub.splice(index, 1);
        return new Promise((resolve, reject) => {
           ClubModel.findOneAndUpdate({ id : club.id }, club, { upsert: true, new: true }, (err, obj) => {
           if (err){

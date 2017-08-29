@@ -185,5 +185,20 @@ router.post('/addToCustomer', (req, res, next) => {
   });
 });
 
+router.post('/deleteUser', (req, res, next) => {
+  const customerId = req.body.customerId;
+  const club = req.body.club;
+  console.log("from server-deleteUser - user id is: ", customerId );
+  ClubRepository.removeUser(club, customerId)
+  .then(clubUpdated => {
+    console.log('user was deleted');
+    res.status(200).json({isAuth: true, club: clubUpdated});
+  })
+  .catch(err => {
+    console.log('user was not deleted', err);
+    res.status(500).json(false);
+  });
+});
+
 
 export default router;

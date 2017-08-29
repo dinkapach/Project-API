@@ -70,15 +70,31 @@ router.post('/subscribePointsToCustomerById', (req, res, next) => {
   });
 })
 
+router.get('/getCustomerDetails/:customerId', (req, res, next) => {
+  const customerId = req.params.customerId;
+  console.log('customer id js : ' + customerId);
+  ManagerRepository.findCustomerDetalisById(customerId)
+  .then(customer => {
+    console.log("din: " ,customer )
+    if(customer) {
+      
+      res.status(200).json(customer);
+
+    }
+    else { 
+      console.log("user not found");
+      res.status(404).json({customer: customer});
+    }
+  })
+  .catch(err => { 
+    console.log(err); 
+    res.status(500).end();
+  });
+});
+
 router.post('/deleteCustomer', (req, res, next) => {
     const clubId = req.body.clubId;
     const customerId = req.body.customerId;
-
-    console.log("333");
-    console.log(clubId);
-    console.log("444");
-    console.log(customerId);
-
 
     ManagerRepository.removeClubFromUaerClubsByClubId(customerId, clubId)
     .then(customerUpdated => {
@@ -96,5 +112,22 @@ router.post('/deleteCustomer', (req, res, next) => {
       res.status(500).json(false);
     });
   });
+
+  router.post('/deleteClubFromUser', (req, res, next) => {
+  const customerId = req.body.customerId;
+  const clubId = req.body.clubId;
+
+  console.log("from server-users--deleteClubFromUser - customer id is: ", customerId );
+  
+  ManagerRepository.removeClubByClubId(customerId, clubId, "clubs")
+  .then(userUpdated => {
+    console.log('club was deleted');
+    res.status(200).json({isAuth: true, user: userUpdated});
+  })
+  .catch(err => {
+    console.log('club was not deleted', err);
+    res.status(500).json(false);
+  });
+});
 
 export default router;

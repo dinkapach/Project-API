@@ -1,6 +1,7 @@
 import ManagerModel from '../../models/manager-model';
-import clubModel from './club.repository';
-import customerModel from './customer.repository';
+import clubModel from '../../models/club-model';
+import customerModel from '../../models/user-model';
+
 
 export default {
     addManager(manager) {
@@ -81,6 +82,48 @@ export default {
                 console.log(err);
             })
     },
+      findClub(customer, clubId, prop)
+     {
+         return customer[prop].find(club=>club.id == clubId);
+     },
+      getIndexOfClub(customer, clubId, prop)
+     {
+        let index =0;
+        let i = 0;
+        customer[prop].forEach(function(club) {
+            if(club.id == clubId)
+                index = i;
+            i++;
+        });
+        return index; 
+     },
+      findCustomerById(customerId) {
+
+        return new Promise((resolve, reject) => {
+            CustomerModel.findOne({id : customerId}).populate('clubs')
+            .then(customer => resolve(customer))
+            .catch(err => reject(err));
+        });
+    },
+
+removeClubByClubId(customerId, clubId, prop){
+   this.findCustomerById(customerId)
+        .then(customer => {
+            if(customer)
+            {
+                let i = this.getIndexOfClub(customer, clubId, prop);
+                let club = this.findClub(customer, clubId, prop)
+                if(club){
+                    let index = club.items.indexOf(oldItem);
+                    customer[prop][i].items.splice(index, 1);
+                    customer.save();
+                }
+                else{ console.log("customer repository - remove club by clubid - club wasnt found"); }
+            }
+            else { console.log("customer repository - remove club by clubid  -Customer not found"); }
+        })
+        .catch(err => { console.log(err); });
+},
     addPointsToCustomerById(customerId, clubId, numOfPoints) {
         
         return clubModel.findClubById(clubId)
@@ -167,6 +210,14 @@ export default {
             .catch(err => {
                 console.log(err);
             })
+    },
+    findCustomerDetalisById(customerId) {
+        return new Promise((resolve, reject) => {
+            customerModel.findOne({_id : customerId})
+            .populate('customer')
+            .then(customer => resolve(customer))
+            .catch(err => reject(err));
+        });
     },
     removeBranchFromClub(clubId, branchId) {
         clubModel.findClubById(clubId)

@@ -149,21 +149,23 @@ export default {
             });
         
     },
-    removeClubByClubId(customer, clubId){
-        return new Promise((resolve, reject) => {
-            customer.clubs = customer.clubs.filter(club =>{
-                return club.id != clubId;
-            })
-            CustomerModel.findOneAndUpdate({ id : customer.id }, customer, { upsert: true, new: true }, (err, obj) => {
-                if (err){
-                    console.log(err);
-                    reject(err);
-                }
-                resolve(obj);
-                });
-            });
+    // removeClubByClubId(customer, clubId){
+    //     console.log(clubId);
+
+    //     return new Promise((resolve, reject) => {
+    //         customer.clubs = customer.clubs.filter(club =>{
+    //             return club.id != clubId;
+    //         })
+    //         CustomerModel.findOneAndUpdate({ id : customer.id }, customer, { upsert: true, new: true }, (err, obj) => {
+    //             if (err){
+    //                 console.log(err);
+    //                 reject(err);
+    //             }
+    //             resolve(obj);
+    //             });
+    //         });
             
-    },
+    // },
     changePrivateInfo(custId, index, newItem)
     {
         this.findCustomerById(custId)
@@ -194,6 +196,8 @@ export default {
          })
          .catch(err => { console.log(err); });
      },
+
+
      removeCreditOrReceipt(customerId, creditId, prop)
      {
         return new Promise((resolve, reject) => {
@@ -226,6 +230,7 @@ export default {
      {
         return customer[prop].find(credit => credit.id == creditId);
      },
+   
      getIndexOfCreditOrReceipt(customer, creditId, prop)
      {
         let index =0;
@@ -237,6 +242,7 @@ export default {
         });
         return index;
      },
+    
      changeCreditOrReceiptInfo(customerId, creditId, itemIndex, newItem, prop)
      {
         this.findCustomerById(customerId)
