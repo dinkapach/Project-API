@@ -64,6 +64,18 @@ export default {
     addReceipt(receipt){
         return ReceiptModel.create(receipt);
     },
+    getAllCustomers() {
+        return new Promise((resolve, reject) => {
+            CustomerModel.find({}, (err, clubs) => {
+                if(err) reject(err);
+                else resolve(clubs);
+            });
+        });
+    },
+    deleteClubFromUsersByClubObjectId(clubObjectId) {
+        
+
+    },
     addCustomerCredit(customerId, credit) {
         return new Promise((resolve, reject) => {
             console.log("in addCustomerCredit");

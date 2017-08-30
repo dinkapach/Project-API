@@ -103,8 +103,8 @@ router.post('/deleteCustomer', (req, res, next) => {
       })
       ClubRepository.updateClub(club.id, club)  // update club after remove userClub
       .then(updatedClub => {
-        user.clubs = user.clubs.filter(club => { // remove club from user
-          return club._id != clubObjectId;
+        user.clubs = user.clubs.filter(currClubObjectId => { // remove club from user
+          return currClubObjectId != clubObjectId;
         })
         CustomerRepository.updateCustomer(user.id, user) // updated user after remove club from user
         .then( updatedUser => { res.status(200).json(true); })

@@ -1,4 +1,5 @@
 import ClubModel from '../../models/club-model';
+import CustomerModel from '../../models/user-model';
 import CreditModel from '../../models/credit-model';
 
 export default {
@@ -8,14 +9,33 @@ export default {
     },
     RemoveClub(clubObjectId) {
         return new Promise((resolve, reject) => {
-            ClubModel.findOneAndRemove({ _id : clubObjectId }, (err, obj) => {
-            if (err){
-                console.log("Error in remove club");
-                reject(err);
-            }
-            resolve(obj);
-            });
+            ClubModel.findOneAndRemove({ _id : clubObjectId })
+            .exec(function(err, removed) {
+                CustomerModel.update(
+                  { },
+                  // no _id it is array of objectId not object with _ids
+                  { $pull: { clubs : clubObjectId  } },
+                  { multi: true }, (err, obj) => {
+                    if (err){
+                        console.log("Error in remove club");
+                        reject(err);
+                    }
+                    console.log("obj", obj, "removed", removed);
+                    resolve(obj);
+                    });
         });
+    });
+
+
+        // return new Promise((resolve, reject) => {
+        //     ClubModel.findOneAndRemove({ _id : clubObjectId }, (err, obj) => {
+        //     if (err){
+        //         console.log("Error in remove club");
+        //         reject(err);
+        //     }
+        //     resolve(obj);
+        //     });
+        // });
     },
     findClubById(id) {
         return new Promise((resolve, reject) => {

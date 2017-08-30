@@ -2,6 +2,7 @@ import express from 'express';
 import SuperManagerRepository from '../.././database/repositories/super.manager.repository';
 import ManagerRepository from '../.././database/repositories/manager.repository';
 import ClubRepository from '../.././database/repositories/club.repository';
+import CustomerRepository from '../.././database/repositories/customer.repository';
 import DateTimeHelper from '../.././helpers/datetime.functions';
 
 
@@ -25,6 +26,20 @@ router.get('/managerArr', (req, res, next) => {
 
 });
 
+
+router.post('/updateManager', (req, res, next) => {
+  const manager = req.body.manager;
+
+  ManagerRepository.updateManager(manager.id, manager)
+  .then( updatedManager => {
+    res.status(200).json(true);
+  })
+  .catch( err => {
+    console.log("err to update manager: ", err);
+    res.status(500).json(false);
+  })
+
+});
 
 
 router.post('/addExistingClubToManager', (req, res, next) => {
@@ -81,6 +96,20 @@ router.post('/deleteManagerWithClub', (req, res, next) => {
         console.log("club not removed, err: ", err);
         res.status(500).json(false);
       })
+    })
+    .catch(err => {
+      console.log("error to delete manager: ", err);
+      res.status(500).json(false);
+    })
+
+});
+
+router.post('/deleteManagerWithoutClub', (req, res, next) => {
+  const managerId = req.body.managerId;
+
+    ManagerRepository.removeManager(managerId)
+    .then(result => {
+      res.status(200).json(true);
     })
     .catch(err => {
       console.log("error to delete manager: ", err);
