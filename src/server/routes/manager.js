@@ -93,41 +93,36 @@ router.get('/getCustomerDetails/:customerId', (req, res, next) => {
 });
 
 router.post('/deleteCustomer', (req, res, next) => {
-    const clubId = req.body.clubId;
-    const customerId = req.body.customerId;
+    const user =  req.body.user;
+    const clubObjectId = req.body.clubId
 
-    ManagerRepository.removeClubFromUaerClubsByClubId(customerId, clubId)
-    .then(customerUpdated => {
-        ClubRepository.removeCustomerByCustomerId(club, customerId)
-        .then(clubUpdated => {
-            res.status(200).json(true);
+    ClubRepository.findClubByObjectId(clubObjectId)
+    .then(club => {
+      club.usersClub = club.usersClub.filter( userClub => { //remove user from usersClub
+        return userClub.customerId != user._id
+      })
+      ClubRepository.updateClub(club.id, club)  // update club after remove userClub
+      .then(updatedClub => {
+        user.clubs = user.clubs.filter(club => { // remove club from user
+          return club._id != clubObjectId;
         })
-        .catch(err => {
-            console.log('Club was not deleted', err);
-            res.status(500).json(false);
+        CustomerRepository.updateCustomer(user.id, user) // updated user after remove club from user
+        .then( updatedUser => { res.status(200).json(true); })
+        .catch( err => {
+          console.log("err deleteCustomer->updateCustomer: ", err);
+          res.status(500).json(false);
         })
+      })
+      .catch( err => {
+        console.log("err deleteCustomer->updateClub: ", err);
+        res.status(500).json(false);
+      });
     })
-    .catch(err => {
-      console.log('Customer was not deleted', err);
+    .catch( err => {
+      console.log("err deleteCustomer->findClubByObjectId: ", err);
       res.status(500).json(false);
     });
   });
 
-  router.post('/deleteClubFromUser', (req, res, next) => {
-  const customerId = req.body.customerId;
-  const clubId = req.body.clubId;
-
-  console.log("from server-users--deleteClubFromUser - customer id is: ", customerId );
-  
-  ManagerRepository.removeClubByClubId(customerId, clubId, "clubs")
-  .then(userUpdated => {
-    console.log('club was deleted');
-    res.status(200).json({isAuth: true, user: userUpdated});
-  })
-  .catch(err => {
-    console.log('club was not deleted', err);
-    res.status(500).json(false);
-  });
-});
 
 export default router;
