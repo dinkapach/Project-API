@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { UserClubSchema } from './user-club-model';
 import { SaleSchema } from './sale-model';
+import { userSchema } from './user-model';
 import ClubModelValidator from './validations/club-model-schema-validations';
 
 const Schema = mongoose.Schema;
@@ -22,6 +23,7 @@ const ClubsApiSchema = new Schema({
     clubId : mongoose.Schema.Types.ObjectId,
     endpoint: String,  // url
 });
+
 
 //const ClubModel = mongoose.model('Club', ClubSchema);
 //const ClubsApiModel = mongoose.model('ClubsApi', ClubsApiSchema);
