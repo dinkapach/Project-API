@@ -13,7 +13,6 @@ export default {
             .exec(function(err, removed) {
                 CustomerModel.update(
                   { },
-                  // no _id it is array of objectId not object with _ids
                   { $pull: { clubs : clubObjectId  } },
                   { multi: true }, (err, obj) => {
                     if (err){

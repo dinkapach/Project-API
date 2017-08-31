@@ -26,6 +26,8 @@ ManagerSchema.pre('save', function(next) {
     });
 });
 
+
+
 ManagerValidator.runManagerValidations(ManagerSchema);
 
 export { ManagerSchema };
