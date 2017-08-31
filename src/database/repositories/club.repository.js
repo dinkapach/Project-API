@@ -55,6 +55,9 @@ export default {
             });
         });
     },
+
+ 
+
     findClubByObjectId(id) {
         return new Promise((resolve, reject) => {
             ClubModel.findOne({_id: id}, (err, club) => {

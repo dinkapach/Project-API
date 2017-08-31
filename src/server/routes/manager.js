@@ -92,6 +92,42 @@ router.get('/getCustomerDetails/:customerId', (req, res, next) => {
   });
 });
 
+router.post('/editSale', (req, res, next) => {
+  const saleUpdate = req.body.saleUpdate;
+  const clubId = req.body.clubId;
+  console.log(clubId, saleUpdate);
+  ManagerRepository.editClubSale(clubId, saleUpdate)
+  .then(saleUpdate => {
+    console.log("return from updateClub:\n" + saleUpdate);
+    res.status(200).json(saleUpdate);
+  })
+  .catch(err => {
+    console.log('Club was not updated', err);
+    res.status(500).json(false);
+  });
+});
+// router.get('/getCustomerName/:customerId', (req, res, next) => {
+//   const customerId = req.params.customerId;
+//   console.log('customer id js : ' + customerId);
+//   ManagerRepository.findCustomerNameById(customerId)
+//   .then(customerName => {
+//     console.log("js customer id : " + customerName )
+//     if(customerName) {
+      
+//       res.status(200).json(customerName);
+
+//     }
+//     else { 
+//       console.log("user not found");
+//       res.status(404).json({customerName: customerName});
+//     }
+//   })
+//   .catch(err => { 
+//     console.log(err); 
+//     res.status(500).end();
+//   });
+// });
+
 router.post('/deleteCustomer', (req, res, next) => {
     const user =  req.body.user;
     const clubObjectId = req.body.clubId
