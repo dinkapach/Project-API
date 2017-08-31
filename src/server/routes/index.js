@@ -5,12 +5,13 @@ import CustomerRepository from '../.././database/repositories/customer.repositor
 import ManagerRepository from '../.././database/repositories/manager.repository';
 import Crypto from '../.././services/crypto.service';
 import dateTimeFunctions from '../.././helpers/datetime.functions';
-
+import birthdayReminder from './../../helpers/birthdayRemainders.functions'
 const router = express.Router();
 
+
+
 router.get('/testDin', (req, res, next) => {
-  console.log("hello world");
-  res.status(200).json("customerUpdated");
+  birthdayReminder.findBirthday();
 });
 
 /* GET home page. */

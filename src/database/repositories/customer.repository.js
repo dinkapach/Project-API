@@ -61,6 +61,27 @@ export default {
            });
         });
     },
+    findBirthdaysToday(){
+        // return new Promise((resolve, reject) => {
+            // return CustomerModel.find({
+            //     birthday: {
+            //         $month: new Date().getDay()
+            //     }
+            // });
+        // });
+        return CustomerModel.aggregate([
+            {$project: {
+                id: 1,
+                date: 1,
+                month: {$month: '$birthday'}
+            }},
+            {$match: {month: 8}},
+            {$project: {
+                id: 1,
+                date: 1
+            }}
+        ]);
+    },
     addReceipt(receipt){
         return ReceiptModel.create(receipt);
     },
