@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import CustomerModel from '../../models/user-model';
+import ClubModel from '../../models/club-model';
 import Crypto from '../../services/crypto.service';
 import ReceiptModel from '../../models/receipt-model'
 
@@ -122,9 +123,25 @@ export default {
         });
     },
 
-    removeCustomer(customer){
-        customer.remove();
-    },
+    removeCustomerFromDB(customerObjectId){
+    return new Promise((resolve, reject) => {
+        CustomerModel.findOneAndRemove({ _id : customerObjectId })
+        .exec(function(err, removed) {
+            ClubModel.update(
+                { },
+                // no _id it is array of objectId not object with _ids
+                { $pull: {usersClub : {customerId: customerObjectId} }},
+                { multi: true }, (err, obj) => {
+                if (err){
+                    console.log("Error in remove customer");
+                    reject(err);
+                }
+                console.log("obj", obj, "removed", removed);
+                resolve(obj);
+            });
+        })
+    })
+},
 
     findCustomerById(customerId) {
         return new Promise((resolve, reject) => {

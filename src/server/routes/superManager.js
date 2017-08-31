@@ -8,6 +8,152 @@ import DateTimeHelper from '../.././helpers/datetime.functions';
 
 const router = express.Router();
 
+////////////////////////////// CUSTOMER STUFF ///////////////////////////////////////////////
+
+router.get('/customerArr', (req, res, next) => {
+  
+    CustomerRepository.getAllCustomers()
+    .then(customerArr => {
+      if(customerArr) {
+        res.status(200).json({isAuth: true, customerArr: customerArr});
+      }
+      else {
+        res.status(500).json({ isAuth: false });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ isAuth: false });
+    });
+  
+  });
+
+  
+  router.post('/deleteCustomerFromDB', (req, res, next) => {
+    const userId = req.body.userId;
+
+    CustomerRepository.findCustomerById(userId)
+    .then(customerFromDB => {
+      CustomerRepository.removeCustomerFromDB(customerFromDB._id)
+      .then(removedCustomer => {
+        console.log(" customer removed ");
+        res.status(200).json(true);
+      })
+      .catch(err => {
+        console.log("customer not removed, err: ", err);
+        res.status(500).json(false);
+      })
+    })
+    .catch( err => {
+      console.log("customer not found, err: ", err);
+      res.status(500).json(false);
+    })  
+});
+
+
+///////////////////////////// CLUBS  STUFF /////////////////////////////////////////////////
+
+router.get('/clubArr', (req, res, next) => {
+  
+    ClubRepository.getAllClubs()
+    .then(clubArr => {
+      if(clubArr) {
+        res.status(200).json({isAuth: true, clubArr: clubArr});
+      }
+      else {
+        res.status(500).json({ isAuth: false });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ isAuth: false });
+    });
+  
+  });
+
+
+  router.post('/updateClub', (req, res, next) => {
+    const club = req.body.club;
+
+    ClubRepository.updateClub(club.id, club)
+    .then( updatedClub => {
+      if(updatedClub){
+        res.status(200).json(true);
+      }
+      else{
+        console.log("updateClub -> Repository.updateclub-> club probably undifine:", updatedClub);
+        res.status(500).json(false);
+      }
+    })
+    .catch(err => {
+      console.log(" err in updated club from super manager.js: ", err);
+      res.status(500).json(false);
+    })
+   
+});
+
+  
+  router.post('/deleteClub', (req, res, next) => {
+    const club = req.body.club;
+
+    ClubRepository.findClubById(club.id)
+    .then(clubFromDB => {
+      ClubRepository.RemoveClub(clubFromDB._id)
+      .then(removedClub => {
+        console.log(" club removed ");
+        res.status(200).json(true);
+      })
+      .catch(err => {
+        console.log("club not removed, err: ", err);
+        res.status(500).json(false);
+      })
+    })
+    .catch( err => {
+      console.log("club not found, err: ", err);
+      res.status(500).json(false);
+    })  
+});
+
+router.post('/deleteClubRemoveFromManager', (req, res, next) => {
+  const club = req.body.club;
+  const managerId = req.body.managerId;
+
+  ClubRepository.findClubById(club.id)
+  .then(clubFromDB => {
+    ClubRepository.RemoveClub(clubFromDB._id)
+    .then(removedClub => {
+      ManagerRepository.findManagerById(managerId)
+      .then(manager => {
+        manager.clubId = 0;
+        console.log("deleteClubRemoveFromManager -> manager: ", manager)
+        ManagerRepository.updateManager(manager.id, manager)
+        .then(updatedManager => { res.status(200).json(true); })
+      })
+      .catch(err => {
+        console.log("deleteClubRemoveFromManager->updateManager, err: ", err);
+        res.status(500).json(false);
+      })
+      .catch(err => {
+        console.log("deleteClubRemoveFromManager-> findManagerById, err: ", err);
+        res.status(500).json(false);
+      })
+     
+    })
+    .catch(err => {
+      console.log("club not removed, err: ", err);
+      res.status(500).json(false);
+    })
+  })
+  .catch( err => {
+    console.log("club not found, err: ", err);
+    res.status(500).json(false);
+  })
+
+});
+
+
+
+
+
+//////////////////////////////////// MANAGERS //////////////////////////////////////
 
 router.get('/managerArr', (req, res, next) => {
 
@@ -25,7 +171,6 @@ router.get('/managerArr', (req, res, next) => {
   });
 
 });
-
 
 router.post('/updateManager', (req, res, next) => {
   const manager = req.body.manager;
