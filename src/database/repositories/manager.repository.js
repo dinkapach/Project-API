@@ -248,9 +248,9 @@ removeClubByClubId(customerId, clubId, prop){
                 console.log(err);
             })
     },
-    findCustomerDetalisById(clubId) {
-        return new Promise((resolve, reject) => {
-            customerModel.find({clubId : clubId})
+    findCustomerDetalisById(customerId) {
+       return new Promise((resolve, reject) => {
+            customerModel.findOne({_id : customerId})
             .populate('customer')
             .then(customer => resolve(customer))
             .catch(err => reject(err));
