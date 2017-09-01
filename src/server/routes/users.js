@@ -28,6 +28,27 @@ router.get('/', (req, res, next) => {
   });
 });
 
+router.get('/testNoyMoshe', (req, res, next) => {
+  const clubId = 10;
+  
+  // console.log(req.query);
+  CustomerRepository.getAllCustomerByClubId(clubId)
+  .then(customers => {
+    if(customers) {
+      console.log('customers test :', customers)
+      res.status(200).json(customers);
+    }
+    else { 
+      console.log("customers not found");
+      res.status(404).json({customers: customers});
+    }
+  })
+  .catch(err => { 
+    console.log(err); 
+    res.status(500).end();
+  });
+});
+
 
 
 

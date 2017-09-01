@@ -73,6 +73,15 @@ export default {
             });
         });
     },
+    getAllCustomerByClubId(clubId) {
+        return new Promise((resolve, reject) => {
+            ClubModel.findOne({id : clubId})
+            .populate('cusfwfsftomerId')
+            .then(customers => resolve(customers))
+            .catch(err => reject(err));
+            
+        });        
+    },
     deleteClubFromUsersByClubObjectId(clubObjectId) {
         
 
@@ -150,6 +159,14 @@ export default {
             .catch(err => reject(err));
         });
     },
+
+    //  findIdByCustomerId(customerId) {
+    //     return new Promise((resolve, reject) => {
+    //         CustomerModel.findOne({id : customerId}).populate('clubs')
+    //         .then(customer => resolve(customer._id))
+    //         .catch(err => reject(err));
+    //     });
+    // },
      findCustomerByObjectId(id) {
         return new Promise((resolve, reject) => {
             CustomerModel.findOne({_id: id}, (err, customer) => {

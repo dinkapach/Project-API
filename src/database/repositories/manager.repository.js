@@ -112,9 +112,10 @@ export default {
     },
 
     editClubSale(clubId, saleUpdate) {
+
         return new Promise((resolve, reject) => {
-            ClubModel.update({id: clubId, 'clubs._id': saleUpdate._id},
-            {$set: { "sale.$": saleUpdate }})
+            clubModel.update({_id: clubId, 'sales._id': saleUpdate._id},
+            {$set: { "sales.$": saleUpdate }})
             .then(sale => resolve(sale))
             .catch(err => reject(err));
         });
@@ -247,9 +248,9 @@ removeClubByClubId(customerId, clubId, prop){
                 console.log(err);
             })
     },
-    findCustomerDetalisById(customerId) {
+    findCustomerDetalisById(clubId) {
         return new Promise((resolve, reject) => {
-            customerModel.findOne({_id : customerId})
+            customerModel.find({clubId : clubId})
             .populate('customer')
             .then(customer => resolve(customer))
             .catch(err => reject(err));
