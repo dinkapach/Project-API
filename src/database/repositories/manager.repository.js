@@ -256,6 +256,14 @@ removeClubByClubId(customerId, clubId, prop){
             .catch(err => reject(err));
         });
     },
+    findCustomers(clubId) {
+        return new Promise((resolve, reject) => {
+            customerModel.find({clubId : clubId})
+            .populate('customer')
+            .then(customer => resolve(customer))
+            .catch(err => reject(err));
+        });
+    },
 
 //      findCustomerNameById(customerId) {
 //       customerModel.findCustomerById(customerId)

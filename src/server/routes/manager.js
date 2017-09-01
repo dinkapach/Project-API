@@ -92,6 +92,28 @@ router.get('/getCustomerDetails/:customerId', (req, res, next) => {
   });
 });
 
+router.get('/getCustomers/:clubId', (req, res, next) => {
+  const customerId = req.params.clubId;
+  console.log('club id js : ' + clubId);
+  ManagerRepository.findCustomers(clubId)
+  .then(customers => {
+    console.log("din: " ,customers )
+    if(customer) {
+      
+      res.status(200).json(customers);
+
+    }
+    else { 
+      console.log("user not found");
+      res.status(404).json({customer: customer});
+    }
+  })
+  .catch(err => { 
+    console.log(err); 
+    res.status(500).end();
+  });
+});
+
 router.post('/editSale', (req, res, next) => {
   
   const saleUpdate = req.body.saleUpdate;
