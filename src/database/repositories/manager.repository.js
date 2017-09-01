@@ -1,7 +1,7 @@
 import ManagerModel from '../../models/manager-model';
 import clubModel from '../../models/club-model';
 import customerModel from '../../models/user-model';
-
+import ClubRepository from '../.././database/repositories/club.repository';
 
 export default {
     addManager(manager) {
@@ -90,8 +90,9 @@ export default {
         //TODO : delete this club also
     },
     addSale(clubId, sale) {
-        return clubModel.findClubById(clubId)
+        return ClubRepository.findClubByObjectId(clubId)
             .then(club => {
+                console.log ('manager repository add sale ');
                 club.sales.push(sale);
                 club.save();
             })
