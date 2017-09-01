@@ -76,7 +76,7 @@ export default {
     getAllCustomerByClubId(clubId) {
         return new Promise((resolve, reject) => {
             ClubModel.findOne({id : clubId})
-            .populate('cusfwfsftomerId')
+            .populate('customerId')
             .then(customers => resolve(customers))
             .catch(err => reject(err));
             
