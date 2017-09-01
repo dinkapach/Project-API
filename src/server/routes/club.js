@@ -60,6 +60,7 @@ router.get('/:id', (req, res, next) => {
 
 router.get('/objectid/:clubId', (req, res, next) => {
     const objectId = req.params.clubId;
+    console.log("from get club by obj id:", objectId);
     
     ClubRepository.findClubByObjectId(objectId)
     .then(club => {
@@ -150,9 +151,12 @@ router.post('/addToCustomer', (req, res, next) => {
     .then(customerUpdated => {
       console.log("return from updateCustomer:\n" + customerUpdated);
       club.usersClub.push(userClub);
-      ClubRepository.updateClub(club.id, club);
-      
-      res.status(200).json(true);
+      ClubRepository.updateClub(club.id, club)
+      .then(updateClub => { res.status(200).json(true); })
+      .catch(err => {
+        console.log('club was not updated', err);
+        res.status(500).json(false);
+      })
     })
     .catch(err => {
       console.log('Customer was not updated', err);

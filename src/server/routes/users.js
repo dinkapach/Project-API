@@ -150,7 +150,7 @@ router.post('/deleteCredit', (req, res, next) => {
 
 
 
-router.post('/saveReceipt', (req, res, next) => {
+router.post('/saveImg', (req, res, next) => {
   
     const picture = req.body.picture;
     
@@ -163,10 +163,6 @@ router.post('/saveReceipt', (req, res, next) => {
         console.log(result);
         res.status(200).json({isUpdated : true, result: result})
       }
-    // function(error, result) {
-    //   console.log(result);
-    //   res.status(200).json({isUpdated : true, result: result})
-    // });
     
   })
 });
