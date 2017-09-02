@@ -18,6 +18,7 @@ export default {
 
       return new Date(0, 0, 0, hourOpen, minutesOpen);
     },
+    
     changeDateFortmat(dateString)
     {
         return dateString.slice(3, 5) + '/' + dateString.slice(0, 2) + '/' + dateString.slice(6, 10);

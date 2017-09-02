@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import Customer from '../.././models/user-model';
 import CustomerRepository from '../.././database/repositories/customer.repository';
 import ManagerRepository from '../.././database/repositories/manager.repository';
+import SuperManagerRepository from '../.././database/repositories/super.manager.repository';
 import Crypto from '../.././services/crypto.service';
 import dateTimeFunctions from '../.././helpers/datetime.functions';
 import birthdayReminder from './../../helpers/birthdayRemainders.functions'
@@ -84,6 +85,43 @@ router.post('/manager', (req, res, next) => {
     else {
       console.log( 'not manager'); /////// how to say to user 
       res.status(400).json(manager);
+    }
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).end();
+ });
+});
+
+router.post('/super', (req, res, next) => {
+  const password = req.body.password;
+  const email = req.body.email;
+
+  console.log("email: " + email + "pass: " + password);
+
+  SuperManagerRepository.findSuperManagerByEmail(email)
+  .then(superManager => {
+    console.log(superManager);
+    if(superManager){
+      Crypto.isMatch(password, superManager.password)
+      .then(match => {
+        console.log(match);
+          if(match) {
+              console.log("superManager logged in");
+              res.status(200).json(superManager);
+          } 
+          else { 
+            res.status(400).json("wrong password");
+            console.log("wrong password"); 
+          }
+      })
+      .catch(err => { 
+        console.log(err); 
+        res.status(500).json(err);
+      })
+    }
+    else {
+      res.status(400).json(superManager);
     }
   })
   .catch(err => {

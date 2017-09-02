@@ -1,10 +1,40 @@
 import ClubModel from '../../models/club-model';
+import CustomerModel from '../../models/user-model';
 import CreditModel from '../../models/credit-model';
 
 export default {
 
     addClub(club) {
         return ClubModel.create(club);
+    },
+    RemoveClub(clubObjectId) {
+        return new Promise((resolve, reject) => {
+            ClubModel.findOneAndRemove({ _id : clubObjectId })
+            .exec(function(err, removed) {
+                CustomerModel.update(
+                  { },
+                  { $pull: { clubs : clubObjectId  } },
+                  { multi: true }, (err, obj) => {
+                    if (err){
+                        console.log("Error in remove club");
+                        reject(err);
+                    }
+                    console.log("obj", obj, "removed", removed);
+                    resolve(obj);
+                    });
+        });
+    });
+
+
+        // return new Promise((resolve, reject) => {
+        //     ClubModel.findOneAndRemove({ _id : clubObjectId }, (err, obj) => {
+        //     if (err){
+        //         console.log("Error in remove club");
+        //         reject(err);
+        //     }
+        //     resolve(obj);
+        //     });
+        // });
     },
     findClubById(id) {
         return new Promise((resolve, reject) => {
@@ -25,6 +55,9 @@ export default {
             });
         });
     },
+
+ 
+
     findClubByObjectId(id) {
         return new Promise((resolve, reject) => {
             ClubModel.findOne({_id: id}, (err, club) => {
@@ -51,15 +84,9 @@ export default {
     },
     removeCustomerByCustomerId(club, customerId){
         return new Promise((resolve, reject) => {
-        let index = 0;
-        let i = 0;
-        club.usersClub.forEach((userClub) => {
-                if(customerId == userClub.customerId){
-                    index = i;
-                }
-            i++;
-        });
-        club.usersClub.splice(index, 1);
+        club.userClub = club.userClub.filter(userClub => {
+            return customerId != userClub.customerId;
+        })
 
         ClubModel.findOneAndUpdate({ id : club.id }, club, { upsert: true, new: true }, (err, obj) => {
             if (err){
@@ -83,6 +110,7 @@ export default {
     {
         let i = 0;
         let index = 0;
+
         club.sales.forEach(function(sale) {
             if(sale.id == saleId)
             {
@@ -92,7 +120,40 @@ export default {
         });
 
         club.sales.splice(index, 1);
-        club.save();
+        // club.save();
+       return new Promise((resolve, reject) => {
+          ClubModel.findOneAndUpdate({ id : club.id }, club, { upsert: true, new: true }, (err, obj) => {
+          if (err){
+            console.log(err);
+            reject(err);
+        }
+        resolve(obj);
+        });
+      });
+    },
+    removeUser(club, customerId)
+    {
+        let i = 0;
+        let index = 0;
+        
+        club.usersClub.forEach(function(userClub) {
+            if(userClub.customerId == customerId)
+            {
+                index = i;
+            }
+            i++;
+        });
+
+        club.usersClub.splice(index, 1);
+       return new Promise((resolve, reject) => {
+          ClubModel.findOneAndUpdate({ id : club.id }, club, { upsert: true, new: true }, (err, obj) => {
+          if (err){
+            console.log(err);
+            reject(err);
+        }
+        resolve(obj);
+        });
+      });
     },
     addPointsToClub(club, customerId, points){
          club.usersClub.forEach(function(userClub) {

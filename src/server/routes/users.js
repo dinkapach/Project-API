@@ -28,6 +28,27 @@ router.get('/', (req, res, next) => {
   });
 });
 
+router.get('/testNoyMoshe', (req, res, next) => {
+  const clubId = 10;
+  
+  // console.log(req.query);
+  CustomerRepository.getAllCustomerByClubId(clubId)
+  .then(customers => {
+    if(customers) {
+      console.log('customers test :', customers)
+      res.status(200).json(customers);
+    }
+    else { 
+      console.log("customers not found");
+      res.status(404).json({customers: customers});
+    }
+  })
+  .catch(err => { 
+    console.log(err); 
+    res.status(500).end();
+  });
+});
+
 
 
 
@@ -148,7 +169,9 @@ router.post('/deleteCredit', (req, res, next) => {
 });
 
 
-router.post('/saveReceipt', (req, res, next) => {
+
+
+router.post('/saveImg', (req, res, next) => {
   
     const picture = req.body.picture;
     
@@ -161,10 +184,6 @@ router.post('/saveReceipt', (req, res, next) => {
         console.log(result);
         res.status(200).json({isUpdated : true, result: result})
       }
-    // function(error, result) {
-    //   console.log(result);
-    //   res.status(200).json({isUpdated : true, result: result})
-    // });
     
   })
 });
