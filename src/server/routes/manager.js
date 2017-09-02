@@ -92,6 +92,25 @@ router.get('/getCustomerDetails/:customerId', (req, res, next) => {
   });
 });
 
+router.post('/editSale', (req, res, next) => {
+  
+  const saleUpdate = req.body.saleUpdate;
+  const clubId = req.body.clubId;
+  console.log('edit sale: club id' + clubId);
+  console.log(clubId, saleUpdate);
+
+  ManagerRepository.editClubSale(clubId, saleUpdate)
+  .then(saleUpdate => {
+    console.log("return from updateClub:\n" + saleUpdate);
+    res.status(200).json(saleUpdate);
+  })
+  .catch(err => {
+    console.log('Club was not updated', err);
+    res.status(500).json(false);
+  });
+});
+
+
 router.post('/deleteCustomer', (req, res, next) => {
     const user =  req.body.user;
     const clubObjectId = req.body.clubId

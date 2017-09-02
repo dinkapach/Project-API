@@ -110,6 +110,16 @@ export default {
                 console.log(err);
             })
     },
+
+    editClubSale(clubId, saleUpdate) {
+
+        return new Promise((resolve, reject) => {
+            clubModel.update({_id: clubId, 'sales._id': saleUpdate._id},
+            {$set: { "sales.$": saleUpdate }})
+            .then(sale => resolve(sale))
+            .catch(err => reject(err));
+        });
+    },
       findClub(customer, clubId, prop)
      {
          return customer[prop].find(club=>club.id == clubId);
@@ -239,13 +249,28 @@ removeClubByClubId(customerId, clubId, prop){
             })
     },
     findCustomerDetalisById(customerId) {
-        return new Promise((resolve, reject) => {
+       return new Promise((resolve, reject) => {
             customerModel.findOne({_id : customerId})
             .populate('customer')
             .then(customer => resolve(customer))
             .catch(err => reject(err));
         });
     },
+
+//      findCustomerNameById(customerId) {
+//       customerModel.findCustomerById(customerId)
+//      .then(customer => {
+//         if (customer._id.equals(customerId)) {
+//                 console.log ('find customer Id: ' + customer.id );
+//                 resolve(customer.id);
+//          }
+//     })
+//     .catch(err => {
+//         console.log(err);
+//     });
+
+// },
+
     removeBranchFromClub(clubId, branchId) {
         clubModel.findClubById(clubId)
             .then(club => {
