@@ -146,6 +146,8 @@ router.post('/addToCustomer', (req, res, next) => {
 
     userClub.customerId = customer._id;
     userClub.points = 0;
+    userClub.joinDate = new Date();
+    console.log("user club join date: " + userClub.joinDate);
 
     CustomerRepository.updateCustomer(customer.id, customer)
     .then(customerUpdated => {

@@ -7,7 +7,8 @@ const Schema = mongoose.Schema;
 
 const UserClubSchema = new Schema({
     customerId: {type : mongoose.Schema.Types.ObjectId, ref : 'Customer'}, 
-    points: Number
+    points: Number,
+    joinDate: Date
 });
 
 export { UserClubSchema };
