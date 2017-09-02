@@ -1,11 +1,20 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
+import { ClubSchema } from './club-model';
+import { ClubManuallySchema } from './club-manually-model';
 
 const ReceiptSchema = new Schema({
-    id: Number,
-    dateOfPurchase: Date,
-    items: [String],
-    totalCredit: Number
+    isManual : Boolean,
+    clubId: mongoose.Schema.Types.Mixed,
+    //clubManually: mongoose.Schema.Types.Mixed,
+    img : String
+    
+
+    // id: Number,
+    // clubID: Number, 
+    // dateOfPurchase: Date,
+    // items: [String],
+    // totalCredit: Number
 });
 
 export {ReceiptSchema};

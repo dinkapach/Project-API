@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Crypto from '../services/crypto.service';
 import { ClubSchema } from './club-model';
-import Club from './club-model';
+import  ClubModel from './club-model';
 import ManagerValidator from './validations/manager-schema-validations';
 
 const Schema = mongoose.Schema;
@@ -13,7 +13,7 @@ const ManagerSchema = new Schema({
     lastName: String,
     password: String,
     email: String,
-    clubs: [{type : mongoose.Schema.Types.ObjectId, ref : 'Club'}],
+    clubId: {type : mongoose.Schema.Types.ObjectId, ref : 'Club'},
     permissions: String
 });
 
@@ -25,6 +25,8 @@ ManagerSchema.pre('save', function(next) {
         next();
     });
 });
+
+
 
 ManagerValidator.runManagerValidations(ManagerSchema);
 

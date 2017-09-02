@@ -2,10 +2,18 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Customer from '../.././models/user-model';
 import CustomerRepository from '../.././database/repositories/customer.repository';
+import ManagerRepository from '../.././database/repositories/manager.repository';
+import SuperManagerRepository from '../.././database/repositories/super.manager.repository';
 import Crypto from '../.././services/crypto.service';
 import dateTimeFunctions from '../.././helpers/datetime.functions';
-
+import birthdayReminder from './../../helpers/birthdayRemainders.functions'
 const router = express.Router();
+
+
+
+router.get('/testDin', (req, res, next) => {
+  birthdayReminder.findBirthday();
+});
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
@@ -15,64 +23,111 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
   const password = req.body.password;
   const email = req.body.email;
-
+  console.log("email: " + email + "pass: " + password);
   CustomerRepository.findCustomerByEmail(email)
   .then(customer => {
+    console.log(customer);
+    if(customer){
       Crypto.isMatch(password, customer.password)
       .then(match => {
+        console.log(match);
           if(match) {
               console.log("customer logged in");
-              res.status(200).json({ isAuth : true, customer: customer });
+              res.status(200).json(customer);
           } 
           else { 
-            res.status(200).json({ isAuth: false })
+            res.status(400).json("wrong password");
             console.log("wrong password"); 
           }
       })
       .catch(err => { 
         console.log(err); 
+        res.status(500).json(err);
       })
+    }
+    else {
+      res.status(400).json(customer);
+    }
   })
   .catch(err => {
-    console.log("customer wasnt found");
-    res.status(200).json({ isAuth : false });
+    console.log(err);
+    res.status(500).end();
  });
 });
 
 
-router.post('/singup', (req, res, next) => {
-  const id = req.body.id;
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
+router.post('/manager', (req, res, next) => {
   const password = req.body.password;
-  const address = req.body.address;
   const email = req.body.email;
-  const phone = req.body.phone;
-  const birthday = req.body.birthday;
-  //TODO#username
+  console.log("email: " + email + "pass: " + password);
+  ManagerRepository.findManagerByEmail(email)
+  .then(manager => {
+    console.log('manager: '+ manager);
+    if(manager != null){
+      Crypto.isMatch(password, manager.password)
+      .then(match => {
+        console.log(match);
+          if(match) {
+              console.log("manager logged in");
+              res.status(200).json(manager);
+          } 
+          else { 
+            console.log("wrong password"); 
+            res.status(400).json("wrong password");
+            
+          }
+      })
+      .catch(err => { 
+        console.log(err); 
+        res.status(500).json(err);
+      })
+    }
+    else {
+      console.log( 'not manager'); /////// how to say to user 
+      res.status(400).json(manager);
+    }
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).end();
+ });
+});
 
-  const customer = new Customer({
-      id: id,
-      username: firstName,
-      firstName: firstName,
-      lastName: lastName,
-      password: password,
-      address: address,
-      email: email,
-      age: dateTimeFunctions.calculateAge(birthday),
-      phoneNumber: phone,
-      img : "",
-      birthday: birthday,
-      clubs: [],
-      credits: [],
-      receipts: []
-  });
+router.post('/super', (req, res, next) => {
+  const password = req.body.password;
+  const email = req.body.email;
 
-  console.log(customer);
-  CustomerRepository.addCustomer(customer);
+  console.log("email: " + email + "pass: " + password);
 
-  res.status(200).json({isAuth: true});
-
-})
+  SuperManagerRepository.findSuperManagerByEmail(email)
+  .then(superManager => {
+    console.log(superManager);
+    if(superManager){
+      Crypto.isMatch(password, superManager.password)
+      .then(match => {
+        console.log(match);
+          if(match) {
+              console.log("superManager logged in");
+              res.status(200).json(superManager);
+          } 
+          else { 
+            res.status(400).json("wrong password");
+            console.log("wrong password"); 
+          }
+      })
+      .catch(err => { 
+        console.log(err); 
+        res.status(500).json(err);
+      })
+    }
+    else {
+      res.status(400).json(superManager);
+    }
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).end();
+ });
+});
 
 export default router;

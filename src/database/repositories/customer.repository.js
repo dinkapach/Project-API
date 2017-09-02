@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 import CustomerModel from '../../models/user-model';
+import ClubModel from '../../models/club-model';
+import Crypto from '../../services/crypto.service';
+import ReceiptModel from '../../models/receipt-model'
 
 export default {
 
@@ -10,28 +13,181 @@ export default {
         //         return console.error(err);
         // });
     },
-
-    updateCustomer(customer, cb) { //??? what is cb. and whar exec does
-        return CustomerModel.findOneAndUpdate({id : customer.Id}, customer).exec();
+    updateCustomer(customerId, customerUpdate) {
+        return new Promise((resolve, reject) => {
+            CustomerModel.findOneAndUpdate({ id : customerId }, customerUpdate, { upsert: true, new: true }, (err, obj) => {
+            if (err){
+                console.log("Error in update customer");
+                reject(err);
+            }
+            resolve(obj);
+            });
+        });
     },
-
-    removeCustomer(customer){
-        customer.remove();
+    changePassword(customerId, currentPassword, newPassword) {
+        return new Promise((resolve, reject) => {
+            this.findCustomerById(customerId)
+            .then(customer => {
+              console.log(customer);
+              if(customer){
+                Crypto.isMatch(currentPassword, customer.password)
+                .then(match => {
+                  console.log("passwords match: "+match);
+                    if(match) {
+                        customer.password = newPassword;
+                        customer.save(function(err){
+                            if(err){
+                                console.log(err + "error saving pass");
+                                reject(err);
+                            }
+                            else{
+                                console.log("success saving pass");
+                                resolve(customer);
+                            }
+                        });
+                    } 
+                    else { 
+                      console.log("wrong password"); 
+                      reject(match);
+                    }
+                })}
+              else {
+                  console.log(customer);
+                reject(customer);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+              reject(err);
+           });
+        });
     },
-
-    findCustomerById(id) {
+    findBirthdaysToday(){
         // return new Promise((resolve, reject) => {
-        //     CustomerModel.findOne({Id: id}, (err, customer) => {
-        //         if (err) reject(err);
-        //         else resolve(customer);
+            // return CustomerModel.find({
+            //     birthday: {
+            //         $month: new Date().getDay()
+            //     }
+            // });
+        // });
+        return CustomerModel.aggregate([
+            {$project: {
+                id: 1,
+                date: 1,
+                month: {$month: '$birthday'}
+            }},
+            {$match: {month: 8}},
+            {$project: {
+                id: 1,
+                date: 1
+            }}
+        ]);
+    },
+    addReceipt(receipt){
+        return ReceiptModel.create(receipt);
+    },
+    getAllCustomers() {
+        return new Promise((resolve, reject) => {
+            CustomerModel.find({}, (err, clubs) => {
+                if(err) reject(err);
+                else resolve(clubs);
+            });
+        });
+    },
+    getAllCustomerByClubId(clubId) {
+        return new Promise((resolve, reject) => {
+            ClubModel.findOne({id : clubId})
+            .populate('customerId')
+            .then(customers => resolve(customers))
+            .catch(err => reject(err));
+            
+        });        
+    },
+    deleteClubFromUsersByClubObjectId(clubObjectId) {
+        
+
+    },
+    addCustomerCredit(customerId, credit) {
+        return new Promise((resolve, reject) => {
+            console.log("in addCustomerCredit");
+            this.findCustomerById(customerId)
+            .then(customer =>{
+                if(customer){
+                    console.log(customer + "true");
+                    customer.credits.push(credit);
+                    customer.save(function(err){
+                        if(err){
+                            console.log(err + "error");
+                            reject(err);
+                        }
+                        else{
+                            console.log("success");
+                            resolve(customer);
+                        }
+                    });
+                }
+                else{
+                    console.log(customer + "false");
+                    reject(customer);
+                }
+            })
+            .catch(err => reject(err));
+        });
+    },
+
+    editCustomerCredit(customerId, creditUpdate) {
+        // return new Promise((resolve, reject) => {
+        //     CustomerModel.findOneAndUpdate({ id : customerId }, creditUpdate, { upsert: true, new: true }, (err, obj) => {
+        //     if (err){
+        //         console.log(err);
+        //         reject(err);
+        //     }
+        //     resolve(obj);
         //     });
         // });
         return new Promise((resolve, reject) => {
-            CustomerModel.findOne({id : id}).populate('clubs')
+            CustomerModel.update({id: customerId, 'credits._id': creditUpdate._id},
+            {$set: { "credits.$": creditUpdate }})
+            .then(credit => resolve(credit))
+            .catch(err => reject(err));
+        });
+    },
+
+    removeCustomerFromDB(customerObjectId){
+    return new Promise((resolve, reject) => {
+        CustomerModel.findOneAndRemove({ _id : customerObjectId })
+        .exec(function(err, removed) {
+            ClubModel.update(
+                { },
+                // no _id it is array of objectId not object with _ids
+                { $pull: {usersClub : {customerId: customerObjectId} }},
+                { multi: true }, (err, obj) => {
+                if (err){
+                    console.log("Error in remove customer");
+                    reject(err);
+                }
+                console.log("obj", obj, "removed", removed);
+                resolve(obj);
+            });
+        })
+    })
+},
+
+    findCustomerById(customerId) {
+        return new Promise((resolve, reject) => {
+            CustomerModel.findOne({id : customerId}).populate('clubs')
             .then(customer => resolve(customer))
             .catch(err => reject(err));
         });
     },
+
+    //  findIdByCustomerId(customerId) {
+    //     return new Promise((resolve, reject) => {
+    //         CustomerModel.findOne({id : customerId}).populate('clubs')
+    //         .then(customer => resolve(customer._id))
+    //         .catch(err => reject(err));
+    //     });
+    // },
      findCustomerByObjectId(id) {
         return new Promise((resolve, reject) => {
             CustomerModel.findOne({_id: id}, (err, customer) => {
@@ -41,20 +197,35 @@ export default {
         });
     },
     findCustomerByEmail(email) {
+        // return new Promise((resolve, reject) => {
+        //     CustomerModel.findOne({email: email}, (err, customer) => {
+        //         if(err) reject(err);
+        //         else resolve(customer);
+            // });
         return new Promise((resolve, reject) => {
-            CustomerModel.findOne({email: email}, (err, customer) => {
-                if(err) reject(err);
-                else resolve(customer);
+            CustomerModel.findOne({email : email}).populate('clubs')
+            .then(customer => resolve(customer))
+            .catch(err => reject(err));
             });
-        });
+        
     },
-    removeClubById(customer, clubId){
-        var index;
-        var i =0;
-        index = customer.clubs.indexOf(clubId);
-        customer.Clubs.splice(index, 1);
-        customer.save();
-    },
+    // removeClubByClubId(customer, clubId){
+    //     console.log(clubId);
+
+    //     return new Promise((resolve, reject) => {
+    //         customer.clubs = customer.clubs.filter(club =>{
+    //             return club.id != clubId;
+    //         })
+    //         CustomerModel.findOneAndUpdate({ id : customer.id }, customer, { upsert: true, new: true }, (err, obj) => {
+    //             if (err){
+    //                 console.log(err);
+    //                 reject(err);
+    //             }
+    //             resolve(obj);
+    //             });
+    //         });
+            
+    // },
     changePrivateInfo(custId, index, newItem)
     {
         this.findCustomerById(custId)
@@ -85,24 +256,41 @@ export default {
          })
          .catch(err => { console.log(err); });
      },
+
+
      removeCreditOrReceipt(customerId, creditId, prop)
      {
-         this.findCustomerById(customerId)
-         .then(customer => {
-             if(customer)
-             {
-                let index = this.getIndexOfCreditOrReceipt(customer, creditId, prop)
-                customer[prop].splice(index, 1);
-                customer.save();
-             }
-             else { console.log("Customer wasnt found"); }
-         })
-         .catch(err => { console.log(err); });
+        return new Promise((resolve, reject) => {
+            this.findCustomerById(customerId)
+            .then(customer =>{
+                if(customer){
+                    console.log(customer + "true");
+                    let index = this.getIndexOfCreditOrReceipt(customer, creditId, prop)
+					customer[prop].splice(index, 1);
+					customer.save(function(err){
+                        if(err){
+                            console.log(err + "error");
+                            reject(err);
+                        }
+                        else{
+                            console.log("success");
+                            resolve(customer);
+                        }
+                    });
+                }
+                else{
+                    console.log(customer + "false");
+                    reject(customer);
+                }
+            })
+            .catch(err => reject(err));
+        });
      },
      findCreditOrReceipt(customer, creditId, prop)
      {
         return customer[prop].find(credit => credit.id == creditId);
      },
+   
      getIndexOfCreditOrReceipt(customer, creditId, prop)
      {
         let index =0;
@@ -114,6 +302,7 @@ export default {
         });
         return index;
      },
+    
      changeCreditOrReceiptInfo(customerId, creditId, itemIndex, newItem, prop)
      {
         this.findCustomerById(customerId)
