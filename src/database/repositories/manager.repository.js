@@ -1,6 +1,6 @@
 import ManagerModel from '../../models/manager-model';
-import clubModel from '../../models/club-model';
-import customerModel from '../../models/user-model';
+import ClubModel from '../../models/club-model';
+import CustomerModel from '../../models/user-model';
 import ClubRepository from '../.././database/repositories/club.repository';
 
 export default {
@@ -101,7 +101,7 @@ export default {
             })
     },
     removeSale(clubId, sale) {
-        return clubModel.findClubById(clubId)
+        return ClubModel.findClubById(clubId)
             .then(club => {
                 club.sales.pop(sale);
                 club.save();
@@ -114,7 +114,7 @@ export default {
     editClubSale(clubId, saleUpdate) {
 
         return new Promise((resolve, reject) => {
-            clubModel.update({_id: clubId, 'sales._id': saleUpdate._id},
+            ClubModel.update({_id: clubId, 'sales._id': saleUpdate._id},
             {$set: { "sales.$": saleUpdate }})
             .then(sale => resolve(sale))
             .catch(err => reject(err));
@@ -164,11 +164,11 @@ removeClubByClubId(customerId, clubId, prop){
 },
     addPointsToCustomerById(customerId, clubId, numOfPoints) {
         
-        return clubModel.findClubById(clubId)
+        return ClubModel.findClubById(clubId)
             .then(club => {
                 if (club) {
                     club.usersClub.forEach(function (userClub) {
-                        customerModel.findCustomerById(customerId)
+                        CustomerModel.findCustomerById(customerId)
                             .then(customer => {
                                 if (customer) {
                                     if (customer._id.equals(userClub.customerId)) {
@@ -199,12 +199,12 @@ removeClubByClubId(customerId, clubId, prop){
     },
     subscribePointsToCustomerById(customerId, clubId, numOfPoints)  {
         
-        return clubModel.findClubById(clubId)
+        return ClubModel.findClubById(clubId)
             .then(club => {
                 if (club) {
 
                     club.usersClub.forEach(function (userClub) {
-                        customerModel.findCustomerById(customerId)
+                        CustomerModel.findCustomerById(customerId)
                             .then(customer => {
                                 if (customer) {
                                     if (customer._id.equals(userClub.customerId)) {
@@ -239,7 +239,7 @@ removeClubByClubId(customerId, clubId, prop){
             })
     },
     addBranchToClub(clubId, branchId) {
-        clubModel.findClubById(clubId)
+        ClubModel.findClubById(clubId)
             .then(club => {
                 club.branches.push(branchId);
                 club.save();
@@ -249,8 +249,8 @@ removeClubByClubId(customerId, clubId, prop){
             })
     },
     findCustomerDetalisById(customerId) {
-       return new Promise((resolve, reject) => {
-            customerModel.findOne({_id : customerId})
+        return new Promise((resolve, reject) => {
+            CustomerModel.find({_id : customerId})
             .populate('customer')
             .then(customer => resolve(customer))
             .catch(err => reject(err));
@@ -258,29 +258,16 @@ removeClubByClubId(customerId, clubId, prop){
     },
     findCustomers(clubId) {
         return new Promise((resolve, reject) => {
-            customerModel.find({clubId : clubId})
-            .populate('customer')
+            console.log("clubId: in repo: " + clubId);
+            ClubModel.findOne({id : clubId})
+            .populate({path: 'usersClub', model: 'Customer', })
             .then(customer => resolve(customer))
             .catch(err => reject(err));
         });
     },
 
-//      findCustomerNameById(customerId) {
-//       customerModel.findCustomerById(customerId)
-//      .then(customer => {
-//         if (customer._id.equals(customerId)) {
-//                 console.log ('find customer Id: ' + customer.id );
-//                 resolve(customer.id);
-//          }
-//     })
-//     .catch(err => {
-//         console.log(err);
-//     });
-
-// },
-
     removeBranchFromClub(clubId, branchId) {
-        clubModel.findClubById(clubId)
+        ClubModel.findClubById(clubId)
             .then(club => {
                 club.UsersClub.findOne({ ObjectId: branchId }, (err, branch) => {
                     if (err) {
