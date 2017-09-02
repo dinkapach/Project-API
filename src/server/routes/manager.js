@@ -94,7 +94,6 @@ router.get('/getCustomerDetails/:customerId', (req, res, next) => {
 
 router.get('/getCustomers/:clubId', (req, res, next) => {
   const clubId = req.params.clubId;
-  console.log('ggggggggggggggg');
   console.log('club id js : ' , req.params.clubId);
   ManagerRepository.findCustomers(clubId)
   .then(customers => {
@@ -105,7 +104,7 @@ router.get('/getCustomers/:clubId', (req, res, next) => {
 
     }
     else { 
-      console.log("user not found");
+      console.log("club not found");
       res.status(404).json({customers: customers});
     }
   })
