@@ -18,6 +18,24 @@ export default {
             });
         });
     },
+
+    removeCustomerTest(clubId, customerId){
+        console.log("on remove saale");
+        return new Promise((resolve, reject) => {
+        ClubModel.update(
+            { id: clubId },
+            { $pull: { usersClub: {id: customerId}}},
+            { safe: true },
+            function removeConnectionsCB(err, obj) {
+                if(err){
+                    console.log("err", err);
+                    reject(err);
+                }
+                console.log("obj", obj);
+                resolve(obj);
+            });
+        });    
+
     findManagerById(id) {
         return new Promise((resolve, reject) => {
             ManagerModel.findOne({ id: id }, (err, manager) => {

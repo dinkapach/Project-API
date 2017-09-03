@@ -181,6 +181,10 @@ router.post('/addToCustomer', (req, res, next) => {
   });
 });
 
+
+
+
+
 router.post('/deleteUser', (req, res, next) => {
   const customerId = req.body.customerId;
   const club = req.body.club;
