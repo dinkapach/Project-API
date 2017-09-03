@@ -188,6 +188,27 @@ router.post('/saveImg', (req, res, next) => {
   })
 });
 
+router.get('/getUserObjectId/:userId', (req, res, next) => {
+  const userId = req.params.userId;
+  console.log('userId is : ' + userId);
+
+  CustomerRepository.findCustomerById(userId)
+  .then(customer => {
+    if(customer){
+      res.status(200).json({isAuth: true, userObjId: customer._id})
+    }
+    else {
+      res.status(500).json({isAuth: false});
+    }
+  })
+  .catch(err => {
+    console.log(" err in getUserObjectId", err);
+    res.status(500).json({isAuth: false});
+  })
+
+});
+
+
 // router.post('/saveReceipt', (req, res, next) => {
 
 //   console.log(" in the begin of saveReceipt");
