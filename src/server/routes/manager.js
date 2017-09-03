@@ -36,6 +36,22 @@ router.post('/addSale', (req, res, next) => {
   });
 })
 
+router.post('/updateManagerInfo', (req, res, next) => {
+  const managerUpdate = req.body.managerUpdate;
+  const managerId = req.body.managerId;
+  console.log("from updateManagerInfo: ", managerId, managerUpdate);
+  // res.status(200).json(true);
+  ManagerRepository.updateManager(managerId, managerUpdate)
+  .then(managerUpdated => {
+    console.log("return from updateManager:\n" + managerUpdated);
+    res.status(200).json(managerUpdated);
+  })
+  .catch(err => {
+    console.log('Manager was not updated', err);
+    res.status(500).json(false);
+  });
+});
+
 router.post('/addPointsToCustomerById', (req, res, next) => {
   const customerId = req.body.customerId;
   const clubId = req.body.clubId;
