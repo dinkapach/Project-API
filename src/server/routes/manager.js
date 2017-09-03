@@ -136,7 +136,7 @@ router.post('/editSale', (req, res, next) => {
 router.post('/deleteCustomer', (req, res, next) => {
     const user =  req.body.user;
     const clubObjectId = req.body.clubId
-    console.log("im heereeeeeeeeeeeeeeeeeeeee: ");
+    console.log("im heereeeeeeeeeeeeeeeeeeeee: "+ clubObjectId);
     ClubRepository.findClubByObjectId(clubObjectId)
     .then(club => {
       club.usersClub = club.usersClub.filter( userClub => { //remove user from usersClub

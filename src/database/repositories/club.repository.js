@@ -74,6 +74,8 @@ export default {
             });
         });
     },
+
+     
     getAllClubs() {
         return new Promise((resolve, reject) => {
             ClubModel.find({}, (err, clubs) => {
