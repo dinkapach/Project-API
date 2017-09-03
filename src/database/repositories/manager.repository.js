@@ -130,7 +130,7 @@ export default {
 
     editClubSale(clubId, saleUpdate) {
         return new Promise((resolve, reject) => {
-            ClubModel.update({id: clubId, 'sales._id': saleUpdate._id},
+            ClubModel.update({id: clubId, 'sales.id': saleUpdate.id},
             {$set: { "sales.$": saleUpdate }})
             .then(sale => resolve(sale))
             .catch(err => reject(err));

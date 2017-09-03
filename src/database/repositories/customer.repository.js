@@ -136,17 +136,8 @@ export default {
     },
 
     editCustomerCredit(customerId, creditUpdate) {
-        // return new Promise((resolve, reject) => {
-        //     CustomerModel.findOneAndUpdate({ id : customerId }, creditUpdate, { upsert: true, new: true }, (err, obj) => {
-        //     if (err){
-        //         console.log(err);
-        //         reject(err);
-        //     }
-        //     resolve(obj);
-        //     });
-        // });
         return new Promise((resolve, reject) => {
-            CustomerModel.update({id: customerId, 'credits._id': creditUpdate._id},
+            CustomerModel.update({id: customerId, 'credits.id': creditUpdate.id},
             {$set: { "credits.$": creditUpdate }})
             .then(credit => resolve(credit))
             .catch(err => reject(err));
