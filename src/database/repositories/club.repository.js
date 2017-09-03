@@ -55,9 +55,17 @@ export default {
             });
         });
     },
-
- 
-
+    getClubWithPopulatedCustomers(clubObjectId) {
+        return new Promise((resolve, reject) => {
+            // console.log("clubId: in repo: " + clubId);
+            ClubModel.findOne({_id : clubObjectId})
+            // .populate({path: 'usersClub', model: 'Customer', })
+            .populate('usersClub.customerId'
+                , 'id firstName lastName email address phoneNumber birthday')
+            .then(customer => resolve(customer))
+            .catch(err => reject(err));
+        });
+    },
     findClubByObjectId(id) {
         return new Promise((resolve, reject) => {
             ClubModel.findOne({_id: id}, (err, club) => {

@@ -27,15 +27,14 @@ export default {
         });
     },
     findManagerByEmail(email) {
-      
         return new Promise((resolve, reject) => {
-            ManagerModel.findOne({ email: email }, (err, manager) => {
-                if (err) reject(err);
-                else resolve(manager);
-                    
-            });
+            ManagerModel.findOne({ email: email })
+            // .populate('clubId')
+            // .populate('clubId.usersClub.customerId'
+            // , 'id firstName lastName email address phoneNumber birthday')
+            .then(manager => resolve(manager))
+            .catch(err => reject(err));
         });
-    
     },
     updateManager(managerId, managerUpdate) {
         return new Promise((resolve, reject) => {
@@ -260,7 +259,9 @@ removeClubByClubId(customerId, clubId, prop){
         return new Promise((resolve, reject) => {
             console.log("clubId: in repo: " + clubId);
             ClubModel.findOne({id : clubId})
-            .populate({path: 'usersClub', model: 'Customer', })
+            // .populate({path: 'usersClub', model: 'Customer', })
+            .populate('usersClub.customerId'
+                , 'id firstName lastName email address phoneNumber birthday')
             .then(customer => resolve(customer))
             .catch(err => reject(err));
         });
