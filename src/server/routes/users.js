@@ -120,7 +120,7 @@ router.post('/editCredit', (req, res, next) => {
   console.log(customerId, creditUpdate);
   CustomerRepository.editCustomerCredit(customerId, creditUpdate)
   .then(creditUpdated => {
-    console.log("return from updateCustomer:\n" + creditUpdated);
+    console.log("return from updateCustomer:\n" , creditUpdated);
     res.status(200).json(creditUpdated);
   })
   .catch(err => {
