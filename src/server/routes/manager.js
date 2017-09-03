@@ -123,7 +123,7 @@ router.post('/editSale', (req, res, next) => {
 
   ManagerRepository.editClubSale(clubId, saleUpdate)
   .then(saleUpdate => {
-    console.log("return from updateClub:\n" + saleUpdate);
+    console.log("return from updateClub:\n" ,saleUpdate);
     res.status(200).json(saleUpdate);
   })
   .catch(err => {
