@@ -55,9 +55,17 @@ export default {
             });
         });
     },
-
- 
-
+    getClubWithPopulatedCustomers(clubObjectId) {
+        return new Promise((resolve, reject) => {
+            // console.log("clubId: in repo: " + clubId);
+            ClubModel.findOne({_id : clubObjectId})
+            // .populate({path: 'usersClub', model: 'Customer', })
+            .populate('usersClub.customerId'
+                , 'id firstName lastName email address phoneNumber birthday')
+            .then(customer => resolve(customer))
+            .catch(err => reject(err));
+        });
+    },
     findClubByObjectId(id) {
         return new Promise((resolve, reject) => {
             ClubModel.findOne({_id: id}, (err, club) => {
@@ -106,30 +114,45 @@ export default {
     {
         return club.sales.find(sale => sale.id == saleId)
     },
-    removeSale(club, saleId)
-    {
-        let i = 0;
-        let index = 0;
-
-        club.sales.forEach(function(sale) {
-            if(sale.id == saleId)
-            {
-                index = i;
-            }
-            i++;
+    removeSale(clubId, saleId){
+        console.log("on remove saale");
+        return new Promise((resolve, reject) => {
+        ClubModel.update(
+            { id: clubId },
+            { $pull: { sales: {id: saleId}}},
+            { safe: true },
+            function removeConnectionsCB(err, obj) {
+                if(err){
+                    console.log("err", err);
+                    reject(err);
+                }
+                console.log("obj", obj);
+                resolve(obj);
+            });
         });
 
-        club.sales.splice(index, 1);
-        // club.save();
-       return new Promise((resolve, reject) => {
-          ClubModel.findOneAndUpdate({ id : club.id }, club, { upsert: true, new: true }, (err, obj) => {
-          if (err){
-            console.log(err);
-            reject(err);
-        }
-        resolve(obj);
-        });
-      });
+    //     let i = 0;
+    //     let index = 0;
+
+    //     club.sales.forEach(function(sale) {
+    //         if(sale.id == saleId)
+    //         {
+    //             index = i;
+    //         }
+    //         i++;
+    //     });
+
+    //     club.sales.splice(index, 1);
+    //     // club.save();
+    //    return new Promise((resolve, reject) => {
+    //       ClubModel.findOneAndUpdate({ id : club.id }, club, { upsert: true, new: true }, (err, obj) => {
+    //       if (err){
+    //         console.log(err);
+    //         reject(err);
+    //     }
+    //     resolve(obj);
+    //     });
+    //   });
     },
     removeUser(club, customerId)
     {

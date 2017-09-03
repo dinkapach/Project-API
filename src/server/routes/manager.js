@@ -94,7 +94,6 @@ router.get('/getCustomerDetails/:customerId', (req, res, next) => {
 
 router.get('/getCustomers/:clubId', (req, res, next) => {
   const clubId = req.params.clubId;
-  console.log('ggggggggggggggg');
   console.log('club id js : ' , req.params.clubId);
   ManagerRepository.findCustomers(clubId)
   .then(customers => {
@@ -105,7 +104,7 @@ router.get('/getCustomers/:clubId', (req, res, next) => {
 
     }
     else { 
-      console.log("user not found");
+      console.log("club not found");
       res.status(404).json({customers: customers});
     }
   })
@@ -136,8 +135,7 @@ router.post('/editSale', (req, res, next) => {
 
 router.post('/deleteCustomer', (req, res, next) => {
     const user =  req.body.user;
-    const clubObjectId = req.body.clubId
-    console.log("im heereeeeeeeeeeeeeeeeeeeee: ");
+    const clubObjectId = req.body.clubId;
     ClubRepository.findClubByObjectId(clubObjectId)
     .then(club => {
       club.usersClub = club.usersClub.filter( userClub => { //remove user from usersClub
@@ -145,7 +143,6 @@ router.post('/deleteCustomer', (req, res, next) => {
       })
       ClubRepository.updateClub(club.id, club)  // update club after remove userClub
       .then(updatedClub => {
-        console.log("2222222222222222: ");
         user.clubs = user.clubs.filter(currClubObjectId => { // remove club from user
           return currClubObjectId != clubObjectId;
         })
@@ -166,6 +163,22 @@ router.post('/deleteCustomer', (req, res, next) => {
       res.status(500).json(false);
     });
   });
+
+  router.post('/updateClubInfo', (req, res, next) => {
+  const clubUpdate = req.body.clubUpdate;
+  const clubId = req.body.clubId;
+  console.log("from updateCustomerInfo: ", clubId, clubUpdate);
+
+  ClubRepository.updateClub(clubId, clubUpdate)
+  .then(clubUpdate => {
+    console.log("return from updateClub:\n" + clubUpdate);
+    res.status(200).json(clubUpdate);
+  })
+  .catch(err => {
+    console.log('Club was not updated', err);
+    res.status(500).json(false);
+  });
+});
 
 // router.post('/deleteCustomer', (req, res, next) => {
 //     const clubId = req.body.clubId;

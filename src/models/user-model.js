@@ -20,11 +20,12 @@ const CustomerSchema = new Schema({
     age: Number,
     phoneNumber: String,
     img : String,
-    birthday: String,
+    birthday: Date,
     clubs: [{type : mongoose.Schema.Types.ObjectId, ref : 'Club'}],
     credits: [CreditSchema],
     receipts: [ReceiptSchema],
-    manuallyClubs: [ClubManuallySchema]
+    manuallyClubs: [ClubManuallySchema],
+    joinDate: Date
 },    
     );
 

@@ -146,6 +146,8 @@ router.post('/addToCustomer', (req, res, next) => {
 
     userClub.customerId = customer._id;
     userClub.points = 0;
+    userClub.joinDate = new Date();
+    console.log("user club join date: " + userClub.joinDate);
 
     CustomerRepository.updateCustomer(customer.id, customer)
     .then(customerUpdated => {
@@ -166,9 +168,9 @@ router.post('/addToCustomer', (req, res, next) => {
 
   router.post('/deleteSale', (req, res, next) => {
   const saleId = req.body.saleId;
-  const club = req.body.club;
+  const clubId = req.body.clubId;
   console.log("from server-deleteSale - user id is: ", saleId );
-  ClubRepository.removeSale(club, saleId)
+  ClubRepository.removeSale(clubId, saleId)
   .then(clubUpdated => {
     console.log('sale was deleted');
     res.status(200).json({isAuth: true, club: clubUpdated});
