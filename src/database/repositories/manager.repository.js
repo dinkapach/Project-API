@@ -2,6 +2,7 @@ import ManagerModel from '../../models/manager-model';
 import ClubModel from '../../models/club-model';
 import CustomerModel from '../../models/user-model';
 import ClubRepository from '../.././database/repositories/club.repository';
+import CustomerRepository from '../.././database/repositories/customer.repository';
 
 export default {
     addManager(manager) {
@@ -160,40 +161,21 @@ removeClubByClubId(customerId, clubId, prop){
         })
         .catch(err => { console.log(err); });
 },
-    addPointsToCustomerById(customerId, clubId, numOfPoints) {
-        
-        return ClubModel.findClubById(clubId)
-            .then(club => {
-                if (club) {
-                    club.usersClub.forEach(function (userClub) {
-                        CustomerModel.findCustomerById(customerId)
-                            .then(customer => {
-                                if (customer) {
-                                    if (customer._id.equals(userClub.customerId)) {
-                                        userClub.points = parseInt(userClub.points) + parseInt(numOfPoints);
-                                        console.log("points: ", userClub.points);
-                                        club.save();
-                                    }
-                                  
-                                }
-                                else {
-                                    console.log("customer not found");
-                                }
-                            })
-                            .catch(err => {
-                                console.log(err);
-                            });
-
-
-                    })
-                }
-                else {
-                    console.log("no clubs");
+    addPointsToCustomerById(customerId, clubObjId, numOfPoints) {
+        return new Promise((resolve, reject) => {
+        ClubRepository.findClubByObjectId(clubObjId)
+        .then(club => {
+            club.usersClub.forEach( userClub => {
+                if(userClub.customerId == customerId){
+                    userClub.points = numOfPoints;
                 }
             })
-            .catch(err => {
-                console.log(err);
-            })
+            return ClubRepository.updateClub(club.id, club)
+        })
+        .catch(err => {
+            resolve(err);
+        })
+    })
     },
     subscribePointsToCustomerById(customerId, clubId, numOfPoints)  {
         
@@ -260,12 +242,11 @@ removeClubByClubId(customerId, clubId, prop){
             ClubModel.findOne({id : clubId})
             // .populate({path: 'usersClub', model: 'Customer', })
             .populate('usersClub.customerId'
-                , 'id firstName lastName email address phoneNumber birthday')
+                , 'id firstName lastName email address phoneNumber birthday img')
             .then(customer => resolve(customer))
             .catch(err => reject(err));
         });
     },
-
     removeBranchFromClub(clubId, branchId) {
         ClubModel.findClubById(clubId)
             .then(club => {

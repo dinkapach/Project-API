@@ -38,11 +38,11 @@ router.post('/addSale', (req, res, next) => {
 
 router.post('/addPointsToCustomerById', (req, res, next) => {
   const customerId = req.body.customerId;
-  const clubId = req.body.clubId;
+  const clubObjId = req.body.clubObjId;
   const numOfPoints = req.body.numOfPoints;
 
-  ManagerRepository.addPointsToCustomerById(customerId, clubId, numOfPoints)
-    .then(pointsUpdated => {
+  ManagerRepository.addPointsToCustomerById(customerId, clubObjId, numOfPoints)
+    .then(clubUpdated => {
       console.log("blue");
       res.status(200).json(true);
     })
