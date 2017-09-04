@@ -10,12 +10,12 @@ export default {
     },
     removeManager(managerId) {
         return new Promise((resolve, reject) => {
-            ManagerModel.findOneAndRemove({ id : managerId }, (err, obj) => {
-            if (err){
-                console.log("Error in remove manager");
-                reject(err);
-            }
-            resolve(obj);
+            ManagerModel.findOneAndRemove({ id: managerId }, (err, obj) => {
+                if (err) {
+                    console.log("Error in remove manager");
+                    reject(err);
+                }
+                resolve(obj);
             });
         });
     },
@@ -30,46 +30,46 @@ export default {
     findManagerByEmail(email) {
         return new Promise((resolve, reject) => {
             ManagerModel.findOne({ email: email })
-            // .populate('clubId')
-            // .populate('clubId.usersClub.customerId'
-            // , 'id firstName lastName email address phoneNumber birthday')
-            .then(manager => resolve(manager))
-            .catch(err => reject(err));
+                // .populate('clubId')
+                // .populate('clubId.usersClub.customerId'
+                // , 'id firstName lastName email address phoneNumber birthday')
+                .then(manager => resolve(manager))
+                .catch(err => reject(err));
         });
     },
     updateManager(managerId, managerUpdate) {
         return new Promise((resolve, reject) => {
-            ManagerModel.findOneAndUpdate({ id : managerId }, managerUpdate, { upsert: true, new: true }, (err, obj) => {
-            if (err){
-                console.log("Error in update manager");
-                reject(err);
-            }
-            resolve(obj);
+            ManagerModel.findOneAndUpdate({ id: managerId }, managerUpdate, { upsert: true, new: true }, (err, obj) => {
+                if (err) {
+                    console.log("Error in update manager");
+                    reject(err);
+                }
+                resolve(obj);
             });
         });
     },
     getAllManagers() {
         return new Promise((resolve, reject) => {
             ManagerModel.find({}, (err, clubs) => {
-                if(err) reject(err);
+                if (err) reject(err);
                 else resolve(clubs);
             });
         });
     },
-    removeClubFromUaerClubsByClubId(customer, clubId){
+    removeClubFromUaerClubsByClubId(customer, clubId) {
         return new Promise((resolve, reject) => {
-            customer.clubs = customer.clubs.filter(club =>{
+            customer.clubs = customer.clubs.filter(club => {
                 return club.id != clubId;
             })
-            CustomerModel.findOneAndUpdate({ id : customer.id }, customer, { upsert: true, new: true }, (err, obj) => {
-                if (err){
+            CustomerModel.findOneAndUpdate({ id: customer.id }, customer, { upsert: true, new: true }, (err, obj) => {
+                if (err) {
                     console.log(err);
                     reject(err);
                 }
                 resolve(obj);
-                });
             });
-            
+        });
+
     },
     addClub(manager, clubId) {
         manager.clubs.push(clubId);
@@ -92,7 +92,7 @@ export default {
     addSale(clubId, sale) {
         return ClubRepository.findClubByObjectId(clubId)
             .then(club => {
-                console.log ('manager repository add sale ');
+                console.log('manager repository add sale ');
                 club.sales.push(sale);
                 club.save();
             })
@@ -113,110 +113,104 @@ export default {
 
     editClubSale(clubId, saleUpdate) {
         return new Promise((resolve, reject) => {
-            ClubModel.update({id: clubId, 'sales.id': saleUpdate.id},
-            {$set: { "sales.$": saleUpdate }})
-            .then(sale => resolve(sale))
-            .catch(err => reject(err));
+            ClubModel.update({ id: clubId, 'sales.id': saleUpdate.id },
+                { $set: { "sales.$": saleUpdate } })
+                .then(sale => resolve(sale))
+                .catch(err => reject(err));
         });
     },
-      findClub(customer, clubId, prop)
-     {
-         return customer[prop].find(club=>club.id == clubId);
-     },
-      getIndexOfClub(customer, clubId, prop)
-     {
-        let index =0;
+    findClub(customer, clubId, prop) {
+        return customer[prop].find(club => club.id == clubId);
+    },
+    getIndexOfClub(customer, clubId, prop) {
+        let index = 0;
         let i = 0;
-        customer[prop].forEach(function(club) {
-            if(club.id == clubId)
+        customer[prop].forEach(function (club) {
+            if (club.id == clubId)
                 index = i;
             i++;
         });
-        return index; 
-     },
-      findCustomerById(customerId) {
+        return index;
+    },
+    findCustomerById(customerId) {
 
         return new Promise((resolve, reject) => {
-            CustomerModel.findOne({id : customerId}).populate('clubs')
-            .then(customer => resolve(customer))
-            .catch(err => reject(err));
+            CustomerModel.findOne({ id: customerId }).populate('clubs')
+                .then(customer => resolve(customer))
+                .catch(err => reject(err));
         });
     },
 
-removeClubByClubId(customerId, clubId, prop){
-   this.findCustomerById(customerId)
-        .then(customer => {
-            if(customer)
-            {
-                let i = this.getIndexOfClub(customer, clubId, prop);
-                let club = this.findClub(customer, clubId, prop)
-                if(club){
-                    let index = club.items.indexOf(oldItem);
-                    customer[prop][i].items.splice(index, 1);
-                    customer.save();
+    removeClubByClubId(customerId, clubId, prop) {
+        this.findCustomerById(customerId)
+            .then(customer => {
+                if (customer) {
+                    let i = this.getIndexOfClub(customer, clubId, prop);
+                    let club = this.findClub(customer, clubId, prop)
+                    if (club) {
+                        let index = club.items.indexOf(oldItem);
+                        customer[prop][i].items.splice(index, 1);
+                        customer.save();
+                    }
+                    else { console.log("customer repository - remove club by clubid - club wasnt found"); }
                 }
-                else{ console.log("customer repository - remove club by clubid - club wasnt found"); }
-            }
-            else { console.log("customer repository - remove club by clubid  -Customer not found"); }
+                else { console.log("customer repository - remove club by clubid  -Customer not found"); }
+            })
+            .catch(err => { console.log(err); });
+    },
+
+    subscribePointsToCustomerById(customerId, clubObjId, numOfPoints) {
+        return new Promise((resolve, reject) => {
+            ClubRepository.findClubByObjectId(clubObjId)
+                .then(club => {
+                    let newPoints;
+                    club.usersClub.forEach(userClub => {
+                        if (userClub.customerId.equals(customerId)) {
+                            userClub.points = parseInt(userClub.points) - parseInt(numOfPoints);
+                            newPoints = userClub.points;
+                            if (userClub.points < 0) {
+                                userClub.points = 0;
+                                newPoints = 0;
+                            }
+                        }
+                    })
+                    //return ClubRepository.updateClub(club.id, club)
+                    ClubRepository.updateClub(club.id, club)
+                        .then(updatedClub => {
+                            resolve(newPoints);
+                        })
+                        .catch(err => reject(err))
+                })
+                .catch(err => {
+                    resolve(err);
+                })
         })
-        .catch(err => { console.log(err); });
-},
+    },
     addPointsToCustomerById(customerId, clubObjId, numOfPoints) {
         return new Promise((resolve, reject) => {
-        ClubRepository.findClubByObjectId(clubObjId)
-        .then(club => {
-            club.usersClub.forEach( userClub => {
-                if(userClub.customerId == customerId){
-                    userClub.points = numOfPoints;
-                }
-            })
-            return ClubRepository.updateClub(club.id, club)
-        })
-        .catch(err => {
-            resolve(err);
-        })
-    })
-    },
-    subscribePointsToCustomerById(customerId, clubId, numOfPoints)  {
-        
-        return ClubModel.findClubById(clubId)
-            .then(club => {
-                if (club) {
-
-                    club.usersClub.forEach(function (userClub) {
-                        CustomerModel.findCustomerById(customerId)
-                            .then(customer => {
-                                if (customer) {
-                                    if (customer._id.equals(userClub.customerId)) {
-                                        if (parseInt(userClub.points) < parseInt(numOfPoints)){
-                                            console.log("customer not have enough points");
-                                        }
-                                        else {
-                                            userClub.points = parseInt(userClub.points) - parseInt(numOfPoints);
-                                            console.log("points after suscribe: ", userClub.points);
-                                            club.save();
-                                        }
-                                    }
-                                  
-                                }
-                                else {
-                                    console.log("customer not found");
-                                }
-                            })
-                            .catch(err => {
-                                console.log(err);
-                            });
-
-
+            ClubRepository.findClubByObjectId(clubObjId)
+                .then(club => {
+                    console.log("find club")
+                    let newPoints;
+                    club.usersClub.forEach(userClub => {
+                        console.log(userClub.customerId.equals(customerId));
+                        console.log(userClub.customerId, customerId)
+                        if (userClub.customerId.equals(customerId)) {
+                            userClub.points = parseInt(userClub.points) + parseInt(numOfPoints);
+                            newPoints = userClub.points;
+                        }
                     })
-                }
-                else {
-                    console.log("no clubs");
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            })
+                    //return ClubRepository.updateClub(club.id, club)
+                    ClubRepository.updateClub(club.id, club)
+                        .then(updatedClub => {
+                            resolve(newPoints);
+                        })
+                        .catch(err => reject(err))
+                })
+                .catch(err => {
+                    resolve(err);
+                })
+        })
     },
     addBranchToClub(clubId, branchId) {
         ClubModel.findClubById(clubId)
@@ -230,21 +224,21 @@ removeClubByClubId(customerId, clubId, prop){
     },
     findCustomerDetalisById(customerId) {
         return new Promise((resolve, reject) => {
-            CustomerModel.find({_id : customerId})
-            .populate('customer')
-            .then(customer => resolve(customer))
-            .catch(err => reject(err));
+            CustomerModel.find({ _id: customerId })
+                .populate('customer')
+                .then(customer => resolve(customer))
+                .catch(err => reject(err));
         });
     },
     findCustomers(clubId) {
         return new Promise((resolve, reject) => {
             console.log("clubId: in repo: " + clubId);
-            ClubModel.findOne({id : clubId})
-            // .populate({path: 'usersClub', model: 'Customer', })
-            .populate('usersClub.customerId'
+            ClubModel.findOne({ id: clubId })
+                // .populate({path: 'usersClub', model: 'Customer', })
+                .populate('usersClub.customerId'
                 , 'id firstName lastName email address phoneNumber birthday img')
-            .then(customer => resolve(customer))
-            .catch(err => reject(err));
+                .then(customer => resolve(customer))
+                .catch(err => reject(err));
         });
     },
     removeBranchFromClub(clubId, branchId) {
