@@ -13,7 +13,7 @@ const ClubSchema = new Schema({
     address: String,
     phoneNumber: String,
     img: String,
-    openingHours: [Date, Date],
+    openingHours: [String, String],
     usersClub: [UserClubSchema],
     sales: [SaleSchema],
     branches: [mongoose.Schema.Types.ObjectId],
