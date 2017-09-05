@@ -199,12 +199,36 @@ router.post('/updateManagerInfo', (req, res, next) => {
   // res.status(200).json(true);
   ManagerRepository.updateManager(managerId, managerUpdate)
   .then(managerUpdated => {
-    console.log("return from updateCustomer:\n" + managerUpdated);
+    console.log("return from updateCustomer:\n" , managerUpdated);
     res.status(200).json(managerUpdated);
   })
   .catch(err => {
     console.log('Customer was not updated', err);
     res.status(500).json(false);
+  });
+});
+
+router.post('/changePassword', (req, res, next) => {
+  const currentPassword = req.body.currentPassword;
+  const newPassword = req.body.newPassword;
+  const managerId = req.body.managerId;
+  console.log("currentPassword: " + currentPassword + "newPassword: " + newPassword + 
+  "managerId" + managerId);
+
+  ManagerRepository.changePassword(managerId, currentPassword, newPassword)
+  .then(manager => {
+    if(manager) {
+      console.log("success" + manager);
+      res.status(200).json(manager);
+    }
+    else { 
+      console.log("manager not found" + manager);
+      res.status(400).json(false);
+    }
+  })
+  .catch(err => { 
+    console.log("password not match" + err); 
+    res.status(400).json(false).end();
   });
 });
 
