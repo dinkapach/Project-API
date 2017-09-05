@@ -304,6 +304,8 @@ router.post('/deleteManagerReplaceManagment', (req, res, next) => {
 
 router.post('/addManager', (req, res, next) => {
     const newManager = req.body.newManager;
+    
+    console.log("newManager:", newManager);
 
     SuperManagerRepository.createManager(newManager)
     .then(manager => {
@@ -316,7 +318,7 @@ router.post('/addManager', (req, res, next) => {
       }
     })
     .catch(err => {
-      console.log("error from create manager");
+      console.log("error from create manager", err);
       res.status(500).json(false);
     })
   });
@@ -326,8 +328,8 @@ router.post('/addManager', (req, res, next) => {
     const newClub = req.body.newClub;
     const managerId = req.body.managerId;
 
-    newClub.openingHours[0] = DateTimeHelper.calculateOpeningHours(newClub.openingHours[0]);
-    newClub.openingHours[1] = DateTimeHelper.calculateOpeningHours(newClub.openingHours[1]);
+    //newClub.openingHours[0] = DateTimeHelper.calculateOpeningHours(newClub.openingHours[0]);
+    //newClub.openingHours[1] = DateTimeHelper.calculateOpeningHours(newClub.openingHours[1]);
 
     console.log("new clubafter convert time:", newClub);
 
