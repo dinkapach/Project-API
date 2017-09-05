@@ -7,8 +7,40 @@ import ClubRepository from '../.././database/repositories/club.repository';
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-  res.status(200).json({ response: "OK!" });
+router.get('/:managerId', (req, res, next) => {
+  const managerId = req.params.managerId;
+  console.log('get manager : + ' + managerId);
+  ManagerRepository.findManagerById(managerId)
+  .then(manager => {
+    if(manager) {
+      ClubRepository.getClubWithPopulatedCustomers(manager.clubId)
+      .then(club =>{
+        if(club){
+          console.log("club: ", club);
+          res.status(200).json({
+            manager: manager,
+            club: club
+          });
+        }
+        else{
+          console.log("club not found"); 
+          res.status(400).json("club not found");
+        }
+      })
+      .catch(err => {
+        console.log(err); 
+        res.status(500).json(err);
+      });
+    }
+    else { 
+      console.log("user not found");
+      res.status(404).json({manager: manager});
+    }
+  })
+  .catch(err => { 
+    console.log(err); 
+    res.status(500).end();
+  });
 });
 
 router.post('/addSale', (req, res, next) => {

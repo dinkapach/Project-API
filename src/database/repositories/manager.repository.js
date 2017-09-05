@@ -21,6 +21,7 @@ export default {
         });
     },
     findManagerById(id) {
+        console.log("searching manager id: " + id);
         return new Promise((resolve, reject) => {
             ManagerModel.findOne({ id: id }, (err, manager) => {
                 if (err) reject(err);
