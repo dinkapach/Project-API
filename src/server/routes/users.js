@@ -139,6 +139,7 @@ router.post('/addCredit', (req, res, next) => {
   credit.dateOfExpired = creditObj.dateOfExpired;
   credit.items = creditObj.items;
   credit.totalCredit = creditObj.totalCredit;
+  credit.img = creditObj.img;
 
   CustomerRepository.addCustomerCredit(userId, credit)
   .then(userUpdated => {
