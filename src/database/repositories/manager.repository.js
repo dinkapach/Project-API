@@ -3,6 +3,7 @@ import ClubModel from '../../models/club-model';
 import CustomerModel from '../../models/user-model';
 import ClubRepository from '../.././database/repositories/club.repository';
 import CustomerRepository from '../.././database/repositories/customer.repository';
+import Crypto from '../../services/crypto.service';
 
 export default {
     addManager(manager) {
@@ -258,5 +259,44 @@ export default {
             .catch(err => {
                 console.log(err);
             })
+    },
+
+        changePassword(managerId, currentPassword, newPassword) {
+        return new Promise((resolve, reject) => {
+            this.findManagerById(managerId)
+            .then(manager => {
+              console.log(manager);
+              if(manager){
+                Crypto.isMatch(currentPassword, manager.password)
+                .then(match => {
+                  console.log("passwords match: "+match);
+                    if(match) {
+                        manager.password = newPassword;
+                        manager.save(function(err){
+                            if(err){
+                                console.log(err + "error saving pass");
+                                reject(err);
+                            }
+                            else{
+                                console.log("success saving pass");
+                                resolve(manager);
+                            }
+                        });
+                    } 
+                    else { 
+                      console.log("wrong password"); 
+                      reject(match);
+                    }
+                })}
+              else {
+                  console.log(manager);
+                reject(manager);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+              reject(err);
+           });
+        });
     }
 }
