@@ -126,7 +126,6 @@ router.post('/super', (req, res, next) => {
           } 
           else { 
             res.status(400).json("wrong password");
-            console.log("wrong password"); 
           }
       })
       .catch(err => { 
