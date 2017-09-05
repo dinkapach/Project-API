@@ -190,5 +190,22 @@ router.post('/updateClubInfo', (req, res, next) => {
     });
 });
 
+router.post('/updateManagerInfo', (req, res, next) => {
+
+  const managerUpdate = req.body.managerUpdate;
+  const managerId = req.body.managerId;
+  console.log("from update Manager nfo: ", managerId, managerUpdate);
+  // res.status(200).json(true);
+  ManagerRepository.updateManager(managerId, managerUpdate)
+  .then(managerUpdated => {
+    console.log("return from updateCustomer:\n" + managerUpdated);
+    res.status(200).json(managerUpdated);
+  })
+  .catch(err => {
+    console.log('Customer was not updated', err);
+    res.status(500).json(false);
+  });
+});
+
 
 export default router;
