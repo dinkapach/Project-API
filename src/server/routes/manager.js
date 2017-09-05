@@ -42,31 +42,32 @@ router.post('/addPointsToCustomerById', (req, res, next) => {
   const numOfPoints = req.body.numOfPoints;
 
   ManagerRepository.addPointsToCustomerById(customerId, clubObjId, numOfPoints)
-    .then(clubUpdated => {
-      console.log("blue");
-      res.status(200).json(true);
+    .then(newPoints => {
+      console.log("clubUpdated:", newPoints);
+      
+      res.status(200).json({isUpdated: true, newPoints:newPoints });
     })
     .catch(err => {
       console.log('User was not updated', err);
-      res.status(500).json(false)
+      res.status(500).json({isUpdated: false})
     });
 })
 
 router.post('/subscribePointsToCustomerById', (req, res, next) => {
   console.log("manager js func post subscribe");
   const customerId = req.body.customerId;
-  const clubId = req.body.clubId;
+  const clubObjId = req.body.clubObjId;
   const numOfPoints = req.body.numOfPoints;
 
-  ManagerRepository.subscribePointsToCustomerById(customerId, clubId, numOfPoints)
-    .then(pointsUpdated => {
-      console.log("after manager repository");
-      res.status(200).json(true);
+  ManagerRepository.subscribePointsToCustomerById(customerId, clubObjId, numOfPoints)
+    .then(newPoints => {
+      console.log("clubUpdated:", newPoints);
+      
+      res.status(200).json({isUpdated: true, newPoints:newPoints });
     })
     .catch(err => {
       console.log('User was not updated', err);
-
-      res.status(500).json(false);
+      res.status(500).json({isUpdated: false})
     });
 })
 
