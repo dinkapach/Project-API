@@ -199,7 +199,7 @@ router.post('/updateManagerInfo', (req, res, next) => {
   // res.status(200).json(true);
   ManagerRepository.updateManager(managerId, managerUpdate)
   .then(managerUpdated => {
-    console.log("return from updateCustomer:\n" + managerUpdated);
+    console.log("return from updateCustomer:\n" , managerUpdated);
     res.status(200).json(managerUpdated);
   })
   .catch(err => {
