@@ -7,7 +7,8 @@ import Crypto from '../../services/crypto.service';
 
 export default {
     addManager(manager) {
-        manager.save();
+        return ManagerModel.create(manager);
+       // manager.save();
     },
     removeManager(managerId) {
         return new Promise((resolve, reject) => {
@@ -92,7 +93,7 @@ export default {
         //TODO : delete this club also
     },
     addSale(clubId, sale) {
-        return ClubRepository.findClubByObjectId(clubId)
+        return ClubRepository.findClubById(clubId)
             .then(club => {
                 console.log('manager repository add sale ');
                 club.sales.push(sale);
