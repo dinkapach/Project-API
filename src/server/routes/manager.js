@@ -76,7 +76,6 @@ router.post('/addPointsToCustomerById', (req, res, next) => {
   ManagerRepository.addPointsToCustomerById(customerId, clubObjId, numOfPoints)
     .then(newPoints => {
       console.log("clubUpdated:", newPoints);
-      
       res.status(200).json({isUpdated: true, newPoints:newPoints });
     })
     .catch(err => {
@@ -94,7 +93,6 @@ router.post('/subscribePointsToCustomerById', (req, res, next) => {
   ManagerRepository.subscribePointsToCustomerById(customerId, clubObjId, numOfPoints)
     .then(newPoints => {
       console.log("clubUpdated:", newPoints);
-      
       res.status(200).json({isUpdated: true, newPoints:newPoints });
     })
     .catch(err => {
@@ -110,9 +108,7 @@ router.get('/getCustomerDetails/:customerId', (req, res, next) => {
     .then(customer => {
       console.log("din: ", customer)
       if (customer) {
-
         res.status(200).json(customer);
-
       }
       else {
         console.log("user not found");
@@ -132,9 +128,7 @@ router.get('/getCustomers/:clubId', (req, res, next) => {
     .then(customers => {
       console.log("din: ", customers)
       if (customers) {
-
         res.status(200).json(customers);
-
       }
       else {
         console.log("club not found");
@@ -148,7 +142,6 @@ router.get('/getCustomers/:clubId', (req, res, next) => {
 });
 
 router.post('/editSale', (req, res, next) => {
-
   const saleUpdate = req.body.saleUpdate;
   const clubId = req.body.clubId;
   console.log('edit sale: club id' + clubId);
@@ -165,12 +158,10 @@ router.post('/editSale', (req, res, next) => {
     });
 });
 
-
 router.post('/deleteCustomer', (req, res, next) => {
   const userObjectId = req.body.userObjectId;
   const clubObjectId = req.body.clubId
-  console.log("im heere: " + clubObjectId);
-
+  
   ClubRepository.findClubByObjectId(clubObjectId)
     .then(club => {
       club.usersClub = club.usersClub.filter(userClub => { //remove user from usersClub
@@ -224,11 +215,10 @@ router.post('/updateClubInfo', (req, res, next) => {
 });
 
 router.post('/updateManagerInfo', (req, res, next) => {
-
   const managerUpdate = req.body.managerUpdate;
   const managerId = req.body.managerId;
   console.log("from update Manager nfo: ", managerId, managerUpdate);
-  // res.status(200).json(true);
+
   ManagerRepository.updateManager(managerId, managerUpdate)
   .then(managerUpdated => {
     console.log("return from updateCustomer:\n" , managerUpdated);
@@ -244,8 +234,7 @@ router.post('/changePassword', (req, res, next) => {
   const currentPassword = req.body.currentPassword;
   const newPassword = req.body.newPassword;
   const managerId = req.body.managerId;
-  console.log("currentPassword: " + currentPassword + "newPassword: " + newPassword + 
-  "managerId" + managerId);
+  console.log("currentPassword: " + currentPassword + "newPassword: " + newPassword + "managerId" + managerId);
 
   ManagerRepository.changePassword(managerId, currentPassword, newPassword)
   .then(manager => {
@@ -263,6 +252,5 @@ router.post('/changePassword', (req, res, next) => {
     res.status(400).json(false).end();
   });
 });
-
 
 export default router;

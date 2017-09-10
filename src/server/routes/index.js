@@ -6,18 +6,9 @@ import ManagerRepository from '../.././database/repositories/manager.repository'
 import SuperManagerRepository from '../.././database/repositories/super.manager.repository';
 import Crypto from '../.././services/crypto.service';
 import dateTimeFunctions from '../.././helpers/datetime.functions';
-import birthdayReminder from './../../helpers/birthdayRemainders.functions';
 import ClubRepository from '../.././database/repositories/club.repository';
+
 const router = express.Router();
-
-router.get('/testDin', (req, res, next) => {
-  birthdayReminder.findBirthday();
-});
-
-/* GET home page. */
-router.get('/', (req, res, next) => {
-  res.status(200).json({response : "OK!"});
-});
 
 router.post('/', (req, res, next) => {
   const password = req.body.password;
@@ -97,7 +88,7 @@ router.post('/manager', (req, res, next) => {
       });
     }
     else {
-      console.log('manager not found'); /////// how to say to user 
+      console.log('manager not found');
       res.status(400).json(manager);
     }
   })
@@ -110,7 +101,6 @@ router.post('/manager', (req, res, next) => {
 router.post('/super', (req, res, next) => {
   const password = req.body.password;
   const email = req.body.email;
-
   console.log("email: " + email + "pass: " + password);
 
   SuperManagerRepository.findSuperManagerByEmail(email)

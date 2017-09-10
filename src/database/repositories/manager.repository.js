@@ -32,9 +32,6 @@ export default {
     findManagerByEmail(email) {
         return new Promise((resolve, reject) => {
             ManagerModel.findOne({ email: email })
-                // .populate('clubId')
-                // .populate('clubId.usersClub.customerId'
-                // , 'id firstName lastName email address phoneNumber birthday')
                 .then(manager => resolve(manager))
                 .catch(err => reject(err));
         });
@@ -71,7 +68,6 @@ export default {
                 resolve(obj);
             });
         });
-
     },
     addClub(manager, clubId) {
         manager.clubs.push(clubId);
@@ -80,16 +76,13 @@ export default {
     removeClubById(manager, clubId) {
         var index;
         var i = 0;
-
         manager.clubs.forEach(function (id) {
             if (clubId == id)
                 index = i;
             i++;
         }, this);
-
         manager.clubs.splice(index, 1);
         manager.save();
-        //TODO : delete this club also
     },
     addSale(clubId, sale) {
         return ClubRepository.findClubByObjectId(clubId)
@@ -112,7 +105,6 @@ export default {
                 console.log(err);
             })
     },
-
     editClubSale(clubId, saleUpdate) {
         return new Promise((resolve, reject) => {
             ClubModel.update({ id: clubId, 'sales.id': saleUpdate.id },
@@ -135,14 +127,12 @@ export default {
         return index;
     },
     findCustomerById(customerId) {
-
         return new Promise((resolve, reject) => {
             CustomerModel.findOne({ id: customerId }).populate('clubs')
                 .then(customer => resolve(customer))
                 .catch(err => reject(err));
         });
     },
-
     removeClubByClubId(customerId, clubId, prop) {
         this.findCustomerById(customerId)
             .then(customer => {
@@ -160,7 +150,6 @@ export default {
             })
             .catch(err => { console.log(err); });
     },
-
     subscribePointsToCustomerById(customerId, clubObjId, numOfPoints) {
         return new Promise((resolve, reject) => {
             ClubRepository.findClubByObjectId(clubObjId)
@@ -176,7 +165,6 @@ export default {
                             }
                         }
                     })
-                    //return ClubRepository.updateClub(club.id, club)
                     ClubRepository.updateClub(club.id, club)
                         .then(updatedClub => {
                             resolve(newPoints);
@@ -202,7 +190,6 @@ export default {
                             newPoints = userClub.points;
                         }
                     })
-                    //return ClubRepository.updateClub(club.id, club)
                     ClubRepository.updateClub(club.id, club)
                         .then(updatedClub => {
                             resolve(newPoints);
@@ -236,7 +223,6 @@ export default {
         return new Promise((resolve, reject) => {
             console.log("clubId: in repo: " + clubId);
             ClubModel.findOne({ id: clubId })
-                // .populate({path: 'usersClub', model: 'Customer', })
                 .populate('usersClub.customerId'
                 , 'id firstName lastName email address phoneNumber birthday img')
                 .then(customer => resolve(customer))
@@ -261,43 +247,43 @@ export default {
                 console.log(err);
             })
     },
-
-        changePassword(managerId, currentPassword, newPassword) {
+    changePassword(managerId, currentPassword, newPassword) {
         return new Promise((resolve, reject) => {
             this.findManagerById(managerId)
-            .then(manager => {
-              console.log(manager);
-              if(manager){
-                Crypto.isMatch(currentPassword, manager.password)
-                .then(match => {
-                  console.log("passwords match: "+match);
-                    if(match) {
-                        manager.password = newPassword;
-                        manager.save(function(err){
-                            if(err){
-                                console.log(err + "error saving pass");
-                                reject(err);
-                            }
-                            else{
-                                console.log("success saving pass");
-                                resolve(manager);
-                            }
-                        });
-                    } 
-                    else { 
-                      console.log("wrong password"); 
-                      reject(match);
+                .then(manager => {
+                    console.log(manager);
+                    if (manager) {
+                        Crypto.isMatch(currentPassword, manager.password)
+                            .then(match => {
+                                console.log("passwords match: " + match);
+                                if (match) {
+                                    manager.password = newPassword;
+                                    manager.save(function (err) {
+                                        if (err) {
+                                            console.log(err + "error saving pass");
+                                            reject(err);
+                                        }
+                                        else {
+                                            console.log("success saving pass");
+                                            resolve(manager);
+                                        }
+                                    });
+                                }
+                                else {
+                                    console.log("wrong password");
+                                    reject(match);
+                                }
+                            })
                     }
-                })}
-              else {
-                  console.log(manager);
-                reject(manager);
-              }
-            })
-            .catch(err => {
-              console.log(err);
-              reject(err);
-           });
+                    else {
+                        console.log(manager);
+                        reject(manager);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    reject(err);
+                });
         });
     }
 }
