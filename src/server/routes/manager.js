@@ -57,6 +57,9 @@ router.post('/addSale', (req, res, next) => {
     "price": saleObj.price
   })
 
+  console.log(sale);
+  console.log("club Id is: ", clubId)
+
   ManagerRepository.addSale(clubId, sale)
     .then(saleUpdated => {
       console.log("blue");

@@ -19,6 +19,11 @@ const ManagerSchema = new Schema({
 
 ManagerSchema.pre('save', function(next) {
     var manager = this;
+    console.log("on pre save customer schema");
+    let passwordModified = manager.isModified('password');
+    console.log("pass modified: "+passwordModified);
+    if (!passwordModified)
+        return next();
 
     Crypto.encrypt(manager.password).then((value) => {
         manager.password = value;
