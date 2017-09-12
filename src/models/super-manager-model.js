@@ -15,9 +15,7 @@ const SuperManagerSchema = new Schema({
 
 SuperManagerSchema.pre('save', function(next) {
     var superManager = this;
-    console.log("on pre save customer schema");
     let passwordModified = superManager.isModified('password');
-    console.log("pass modified: "+passwordModified);
     if (!passwordModified)
         return next();
 

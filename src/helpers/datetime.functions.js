@@ -1,5 +1,6 @@
 export default {
     
+    // calculate age from date
     calculateAge(dateString) {
         var newFormatDate = this.changeDateFortmat(dateString); // dateString.slice(3, 5) + '/' + dateString.slice(0, 2) + '/' + dateString.slice(6, 10);
         var today = new Date();

@@ -15,10 +15,8 @@ export default {
                         { $pull: { clubs: clubObjectId } },
                         { multi: true }, (err, obj) => {
                             if (err) {
-                                console.log("Error in remove club");
                                 reject(err);
                             }
-                            console.log("obj", obj, "removed", removed);
                             resolve(obj);
                         });
                 });
@@ -36,7 +34,7 @@ export default {
         return new Promise((resolve, reject) => {
             ClubModel.findOneAndUpdate({ id: clubId }, clubUpdate, { upsert: true, new: true }, (err, obj) => {
                 if (err) {
-                    console.log(" in Update Club");
+                    console.log(" in Update Club", err);
                     reject(err);
                 }
                 resolve(obj);
@@ -98,7 +96,6 @@ export default {
         return club.sales.find(sale => sale.id == saleId)
     },
     removeSale(clubId, saleId) {
-        console.log("on remove saale");
         return new Promise((resolve, reject) => {
             ClubModel.update(
                 { id: clubId },
@@ -109,7 +106,6 @@ export default {
                         console.log("err", err);
                         reject(err);
                     }
-                    console.log("obj", obj);
                     resolve(obj);
                 });
         });

@@ -104,14 +104,11 @@ router.post('/addManualClub', (req, res, next) => {
     club.branches = clubObj.branches;
     club.isManual = clubObj.isManual;
 
-    console.log("From server..addManualClub ");
-
     ClubRepository.addClub(club)
         .then(clubRes => {
             customer.clubs.push(clubRes);
             CustomerRepository.updateCustomer(customer.id, customer)
                 .then(customerUpdated => {
-                    console.log("return from updateCustomer");
                     const userClub = new UserClub();
                     userClub.customerId = customer._id;
                     userClub.points = 0;
@@ -177,9 +174,6 @@ router.post('/deleteSale', (req, res, next) => {
             res.status(500).json(false);
         });
 });
-
-
-
 
 
 router.post('/deleteUser', (req, res, next) => {

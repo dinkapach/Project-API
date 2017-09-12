@@ -12,7 +12,7 @@ export default {
         return new Promise((resolve, reject) => {
             CustomerModel.findOneAndUpdate({ id: customerId }, customerUpdate, { upsert: true, new: true }, (err, obj) => {
                 if (err) {
-                    console.log("Error in update customer");
+                    console.log("Error in update customer", err);
                     reject(err);
                 }
                 resolve(obj);
@@ -23,16 +23,14 @@ export default {
         return new Promise((resolve, reject) => {
             this.findCustomerById(customerId)
                 .then(customer => {
-                    console.log(customer);
                     if (customer) {
                         Crypto.isMatch(currentPassword, customer.password)
                             .then(match => {
-                                console.log("passwords match: " + match);
                                 if (match) {
                                     customer.password = newPassword;
                                     customer.save(function (err) {
                                         if (err) {
-                                            console.log(err + "error saving pass");
+                                            console.log(err , "error saving pass");
                                             reject(err);
                                         }
                                         else {
@@ -79,7 +77,6 @@ export default {
     },
     addCustomerCredit(customerId, credit) {
         return new Promise((resolve, reject) => {
-            console.log("in addCustomerCredit");
             this.findCustomerById(customerId)
                 .then(customer => {
                     if (customer) {
