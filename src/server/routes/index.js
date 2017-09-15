@@ -6,19 +6,9 @@ import ManagerRepository from '../.././database/repositories/manager.repository'
 import SuperManagerRepository from '../.././database/repositories/super.manager.repository';
 import Crypto from '../.././services/crypto.service';
 import dateTimeFunctions from '../.././helpers/datetime.functions';
-import birthdayReminder from './../../helpers/birthdayRemainders.functions'
+import ClubRepository from '../.././database/repositories/club.repository';
+
 const router = express.Router();
-
-
-
-router.get('/testDin', (req, res, next) => {
-  birthdayReminder.findBirthday();
-});
-
-/* GET home page. */
-router.get('/', (req, res, next) => {
-  res.status(200).json({response : "OK!"});
-});
 
 router.post('/', (req, res, next) => {
   const password = req.body.password;
@@ -63,27 +53,42 @@ router.post('/manager', (req, res, next) => {
   ManagerRepository.findManagerByEmail(email)
   .then(manager => {
     console.log('manager: '+ manager);
-    if(manager != null){
+    if(manager){
       Crypto.isMatch(password, manager.password)
       .then(match => {
         console.log(match);
           if(match) {
-              console.log("manager logged in");
-              res.status(200).json(manager);
+            ClubRepository.getClubWithPopulatedCustomers(manager.clubId)
+            .then(club =>{
+              if(club){
+                console.log("manager logged in");
+                res.status(200).json({
+                  manager: manager,
+                  club: club
+                });
+              }
+              else{
+                console.log("wrong password"); 
+                res.status(400).json("club not found");
+              }
+            })
+            .catch(err => {
+              console.log(err); 
+              res.status(500).json(err);
+            });
           } 
           else { 
             console.log("wrong password"); 
             res.status(400).json("wrong password");
-            
           }
       })
       .catch(err => { 
         console.log(err); 
         res.status(500).json(err);
-      })
+      });
     }
     else {
-      console.log( 'not manager'); /////// how to say to user 
+      console.log('manager not found');
       res.status(400).json(manager);
     }
   })
@@ -96,7 +101,6 @@ router.post('/manager', (req, res, next) => {
 router.post('/super', (req, res, next) => {
   const password = req.body.password;
   const email = req.body.email;
-
   console.log("email: " + email + "pass: " + password);
 
   SuperManagerRepository.findSuperManagerByEmail(email)
@@ -112,7 +116,6 @@ router.post('/super', (req, res, next) => {
           } 
           else { 
             res.status(400).json("wrong password");
-            console.log("wrong password"); 
           }
       })
       .catch(err => { 

@@ -13,7 +13,7 @@ const ClubSchema = new Schema({
     address: String,
     phoneNumber: String,
     img: String,
-    openingHours: [Date, Date],
+    openingHours: [String, String],
     usersClub: [UserClubSchema],
     sales: [SaleSchema],
     branches: [mongoose.Schema.Types.ObjectId],
@@ -26,16 +26,6 @@ const ClubsApiSchema = new Schema({
 });
 
 
-
-//const ClubModel = mongoose.model('Club', ClubSchema);
-//const ClubsApiModel = mongoose.model('ClubsApi', ClubsApiSchema);
-
 ClubModelValidator.runClubModelValidations(ClubSchema); 
  export { ClubSchema, ClubsApiSchema };
  export default mongoose.model('Club', ClubSchema);
-
-// export {
-//     ClubSchema,
-//     ClubsApiModel,
-//     ClubModel
-// }

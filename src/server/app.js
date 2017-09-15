@@ -9,7 +9,6 @@ import mongoose from 'mongoose';
 
 import index from './routes/index';
 import users from './routes/users';
-import dashboard from './routes/dashboard';
 import club from './routes/club';
 import manager from './routes/manager';
 import superManager from './routes/superManager';
@@ -41,7 +40,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/index', index);
 app.use('/api/users', users);
-app.use('/api/dashboard', dashboard);
 app.use('/api/club', club);
 app.use('/api/manager', manager);
 app.use('/api/supermanager', superManager);
@@ -62,6 +60,5 @@ app.use((err, req, res, next) => {
   console.log(`There has been an unhandled exception error: ${err}`);
   res.status(err.status || 500).end();
 });
-
 
 export default app;

@@ -7,7 +7,8 @@ const CreditSchema = new Schema({
     dateOfPurchase: Date,
     dateOfExpired: Date,
     items: [String],
-    totalCredit: Number
+    totalCredit: Number,
+    img : String
 });
 
 export {CreditSchema};
